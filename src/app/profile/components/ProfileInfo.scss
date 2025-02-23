@@ -1,0 +1,147 @@
+.profile-info {
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .edit-button {
+      padding: 8px 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      background: white;
+      color: #4a5568;
+      font-size: 14px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #f7fafc;
+        color: #2d3748;
+      }
+    }
+  }
+
+  .error-message {
+    padding: 12px;
+    margin-bottom: 16px;
+    background: #fee2e2;
+    border-radius: 6px;
+    color: #991b1b;
+    font-size: 14px;
+  }
+
+  .info-display {
+    .info-group {
+      display: flex;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #edf2f7;
+
+      &:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .label {
+        width: 120px;
+        color: #718096;
+        font-size: 14px;
+      }
+
+      .value {
+        flex: 1;
+        color: #2d3748;
+        font-size: 16px;
+      }
+    }
+  }
+
+  .edit-form {
+    .form-group {
+      margin-bottom: 20px;
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #4a5568;
+        font-size: 14px;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 16px;
+        color: #2d3748;
+        background-color: white;
+        transition: all 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #4299e1;
+          box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        &:disabled {
+          background-color: #f7fafc;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+
+      .cancel-button {
+        padding: 8px 16px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        color: #4a5568;
+        font-size: 14px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #f7fafc;
+          color: #2d3748;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      .save-button {
+        padding: 8px 24px;
+        background: #4299e1;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #3182ce;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+} 

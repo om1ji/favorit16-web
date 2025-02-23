@@ -1,0 +1,140 @@
+.navbar {
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #007bff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #0056b3;
+    }
+  }
+
+  .nav-categories {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-grow: 1;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-link {
+    color: #333;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+
+    &:hover {
+      background: #f8f9fa;
+      color: #007bff;
+    }
+  }
+
+  .overflow-menu {
+    position: relative;
+
+    .menu-button {
+      background: none;
+      border: none;
+      padding: 0.5rem 1rem;
+      color: #007bff;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+
+      &:hover {
+        color: #0056b3;
+      }
+
+      &:after {
+        content: '▼';
+        font-size: 0.8em;
+      }
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      min-width: 200px;
+      padding: 0.5rem 0;
+      z-index: 1000;
+
+      .dropdown-item {
+        display: block;
+        padding: 0.5rem 1rem;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.2s;
+
+        &:hover {
+          background: #f8f9fa;
+          color: #007bff;
+        }
+      }
+    }
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .nav-categories {
+      order: 3;
+      width: 100%;
+      justify-content: flex-start;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
+
+      &::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 2px;
+      }
+    }
+  }
+} 

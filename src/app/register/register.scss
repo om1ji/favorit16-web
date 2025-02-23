@@ -1,0 +1,136 @@
+.register-page {
+  padding: 60px 0;
+  min-height: calc(100vh - 70px); // Вычитаем высоту шапки
+  display: flex;
+  align-items: center;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .register-form-wrapper {
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+  }
+
+  .register-form {
+    .form-group {
+      margin-bottom: 20px;
+
+      label {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 8px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #eee;
+        border-radius: 4px;
+        font-size: 16px;
+        color: #333;
+        background-color: white;
+        transition: border-color 0.3s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #007bff;
+        }
+
+        &.error {
+          border-color: #dc3545;
+        }
+
+        &:disabled {
+          background: #f8f9fa;
+          cursor: not-allowed;
+        }
+      }
+
+      .error-message {
+        display: block;
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+    }
+
+    .form-error {
+      padding: 12px;
+      background: #dc3545;
+      color: white;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &:hover:not(:disabled) {
+        background: #0056b3;
+      }
+
+      &:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+    }
+
+    .form-links {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #666;
+
+      a {
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #0056b3;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .register-page {
+    padding: 30px 0;
+
+    .register-form-wrapper {
+      padding: 20px;
+    }
+  }
+} 

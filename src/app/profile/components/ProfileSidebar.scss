@@ -1,0 +1,75 @@
+.profile-sidebar {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 6px;
+      color: #4a5568;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-size: 16px;
+
+      &:hover {
+        background: #f7fafc;
+        color: #2d3748;
+      }
+
+      &.active {
+        background: #ebf8ff;
+        color: #3182ce;
+      }
+
+      &.logout {
+        margin-top: 16px;
+        border-top: 1px solid #edf2f7;
+        padding-top: 24px;
+        color: #e53e3e;
+
+        &:hover {
+          background: #fff5f5;
+        }
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar-nav {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      .nav-item {
+        flex: 1;
+        min-width: 140px;
+        justify-content: center;
+
+        &.logout {
+          margin-top: 0;
+          border-top: none;
+          padding-top: 12px;
+        }
+      }
+    }
+  }
+} 
