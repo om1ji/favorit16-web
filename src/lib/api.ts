@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CategoryListResponse, ProductListResponse, Product, ProductFilters } from '@/types/api';
+import { CategoryListResponse, BrandListResponse, ProductListResponse, Product, ProductFilters } from '@/types/api';
 import { AuthResponse, LoginCredentials, RegisterData, User } from '@/types/auth';
 
 const api = axios.create({
@@ -77,6 +77,11 @@ export const getMe = async () => {
 // Products API
 export const getCategories = async () => {
   const response = await api.get<CategoryListResponse>('/api/v1/products/categories/');
+  return response.data;
+};
+
+export const getBrands = async () => {
+  const response = await api.get<BrandListResponse>('/api/v1/products/brands/');
   return response.data;
 };
 

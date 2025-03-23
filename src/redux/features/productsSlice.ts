@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { Category, Product, ProductFilters } from '@/types/api';
-import { getCategories, getProducts, getProduct } from '@/lib/api';
+import { Category, Product, ProductFilters, Brand } from '@/types/api';
+import { getCategories, getProducts, getProduct, getBrands } from '@/lib/api';
 import { RootState } from '../store';
 
 interface ProductsState {
   categories: Category[];
+  brands: Brand[];
   products: Product[];
   selectedProduct: Product | null;
   loading: boolean;
@@ -15,6 +16,7 @@ interface ProductsState {
 
 const initialState: ProductsState = {
   categories: [],
+  brands: [],
   products: [],
   selectedProduct: null,
   loading: false,
@@ -27,6 +29,14 @@ export const fetchCategories = createAsyncThunk(
   'products/fetchCategories',
   async () => {
     const response = await getCategories();
+    return response.results;
+  }
+);
+
+export const fetchBrands = createAsyncThunk(
+  'products/fetchBrands',
+  async () => {
+    const response = await getBrands();
     return response.results;
   }
 );
@@ -77,6 +87,21 @@ const productsSlice = createSlice({
         state.error = action.error.message || 'Failed to fetch categories';
       });
 
+    // Brands
+    builder
+      .addCase(fetchBrands.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBrands.fulfilled, (state, action) => {
+        state.loading = false;
+        state.brands = action.payload;
+      })
+      .addCase(fetchBrands.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch brands';
+      });
+
     // Products
     builder
       .addCase(fetchProducts.pending, (state) => {
@@ -114,6 +139,7 @@ export const { setCurrentPage, clearSelectedProduct } = productsSlice.actions;
 
 // Селекторы
 export const selectCategories = (state: RootState) => state.products.categories;
+export const selectBrands = (state: RootState) => state.products.brands;
 export const selectProducts = (state: RootState) => state.products.products;
 export const selectSelectedProduct = (state: RootState) => state.products.selectedProduct;
 export const selectLoading = (state: RootState) => state.products.loading;

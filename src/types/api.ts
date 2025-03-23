@@ -3,9 +3,16 @@ export interface Category {
   name: string;
   image: string | null;
   parent: string | null;
-  children?: Category[];
+  children: Category[];
   created_at: string;
   updated_at: string;
+}
+
+export interface Brand {
+  id: string;
+  name: string;
+  logo: string | null;
+  created_at: string;
 }
 
 export interface ProductImage {
@@ -23,6 +30,7 @@ export interface Product {
   price: number;
   old_price: number | null;
   category: Category;
+  brand: Brand | null;
   images: ProductImage[];
   feature_image?: ProductImage;
   in_stock: boolean;
@@ -32,6 +40,12 @@ export interface Product {
   is_available: boolean;
   has_discount: boolean;
   discount_percentage: number;
+  
+  // Tire specific fields
+  diameter: number | null;
+  width: number | null;
+  profile: number | null;
+  tire_size: string | null;
 }
 
 export interface ProductListResponse {
@@ -48,13 +62,33 @@ export interface CategoryListResponse {
   results: Category[];
 }
 
+export interface BrandListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Brand[];
+}
+
 export interface ProductFilters {
   category?: string;
+  brand?: string;
   min_price?: number;
   max_price?: number;
   is_available?: boolean;
   has_discount?: boolean;
   in_stock?: boolean;
+  
+  // Tire specific filters
+  diameter?: number;
+  min_diameter?: number;
+  max_diameter?: number;
+  width?: number;
+  min_width?: number;
+  max_width?: number;
+  profile?: number;
+  min_profile?: number;
+  max_profile?: number;
+  
   search?: string;
   ordering?: string;
   page?: number;

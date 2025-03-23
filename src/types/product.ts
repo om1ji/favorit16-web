@@ -10,11 +10,18 @@ export interface ProductImage {
 export interface Category {
   id: string;
   name: string;
-  image: string | null;
+  image?: string | null;
   parent: string | null;
   children: Category[];
   created_at: string;
   updated_at: string;
+}
+
+export interface Brand {
+  id: string;
+  name: string;
+  logo: string | null;
+  created_at: string;
 }
 
 export interface Product {
@@ -24,6 +31,7 @@ export interface Product {
   price: number;
   old_price: number | null;
   category: Category;
+  brand: Brand | null;
   images: ProductImage[];
   in_stock: boolean;
   quantity: number;
@@ -32,6 +40,12 @@ export interface Product {
   is_available: boolean;
   has_discount: boolean;
   discount_percentage: number;
+  
+  // Tire specific fields
+  diameter: number | null;
+  width: number | null;
+  profile: number | null;
+  tire_size: string | null;
 }
 
 export interface ProductsResponse {
@@ -45,8 +59,21 @@ export interface ProductsFilter {
   page?: number;
   page_size?: number;
   category?: string;
+  brand?: string;
   min_price?: number;
   max_price?: number;
+  
+  // Tire specific filters
+  diameter?: number;
+  min_diameter?: number;
+  max_diameter?: number;
+  width?: number;
+  min_width?: number;
+  max_width?: number;
+  profile?: number;
+  min_profile?: number;
+  max_profile?: number;
+  
   search?: string;
   ordering?: string;
 }

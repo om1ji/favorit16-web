@@ -5,6 +5,7 @@ export interface User {
   last_name: string;
   phone: string | null;
   is_active: boolean;
+  is_staff: boolean;
   created_at: string;
 }
 
