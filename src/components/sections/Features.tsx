@@ -1,30 +1,35 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { TruckIcon, CreditCardIcon, ShieldCheckIcon, PhoneIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
+import React from "react";
+import {
+  TruckIcon,
+  CreditCardIcon,
+  ShieldCheckIcon,
+  PhoneIcon,
+} from "@heroicons/react/24/outline";
+import { motion } from "framer-motion";
 
 const features = [
   {
     icon: TruckIcon,
-    title: 'Быстрая доставка',
-    description: 'Доставляем заказы по всей России в кратчайшие сроки'
+    title: "Быстрая доставка",
+    description: "Доставляем заказы по всей России в кратчайшие сроки",
   },
   {
     icon: CreditCardIcon,
-    title: 'Удобная оплата',
-    description: 'Принимаем все популярные способы оплаты, включая рассрочку'
+    title: "Удобная оплата",
+    description: "Принимаем все популярные способы оплаты, включая рассрочку",
   },
   {
     icon: ShieldCheckIcon,
-    title: 'Гарантия качества',
-    description: 'Только оригинальная продукция с официальной гарантией'
+    title: "Гарантия качества",
+    description: "Только оригинальная продукция с официальной гарантией",
   },
   {
     icon: PhoneIcon,
-    title: 'Поддержка 24/7',
-    description: 'Наши специалисты всегда готовы помочь вам с выбором'
-  }
+    title: "Поддержка 24/7",
+    description: "Наши специалисты всегда готовы помочь вам с выбором",
+  },
 ];
 
 const container = {
@@ -32,14 +37,14 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2
-    }
-  }
+      staggerChildren: 0.2,
+    },
+  },
 };
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 const Features = () => {
@@ -67,9 +72,7 @@ const Features = () => {
                 <h3 className="text-lg font-semibold mb-2 text-text-h2">
                   {feature.title}
                 </h3>
-                <p className="text-text-subtitle">
-                  {feature.description}
-                </p>
+                <p className="text-text-subtitle">{feature.description}</p>
               </div>
             </motion.div>
           ))}
@@ -79,4 +82,4 @@ const Features = () => {
   );
 };
 
-export default Features; 
+export default Features;

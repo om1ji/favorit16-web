@@ -1,16 +1,16 @@
 "use client";
 
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { 
-  selectCartItems, 
-  selectCartTotal, 
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectCartItems,
+  selectCartTotal,
   selectIsCartOpen,
   removeFromCart,
   updateCartItem,
-  toggleCart
-} from '@/redux/features/cartSlice';
-import './Cart.scss';
+  toggleCart,
+} from "@/redux/features/cartSlice";
+import "./Cart.scss";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -19,10 +19,10 @@ const Cart = () => {
   const isOpen = useSelector(selectIsCartOpen);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
-      maximumFractionDigits: 0
+    return new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: "RUB",
+      maximumFractionDigits: 0,
     }).format(price);
   };
 
@@ -62,20 +62,24 @@ const Cart = () => {
                     <div className="item-price">{item.product.price} ₽</div>
                     <div className="item-controls">
                       <div className="quantity-controls">
-                        <button 
-                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.quantity - 1)
+                          }
                           disabled={item.quantity <= 1}
                         >
                           -
                         </button>
                         <span>{item.quantity}</span>
-                        <button 
-                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.quantity + 1)
+                          }
                         >
                           +
                         </button>
                       </div>
-                      <button 
+                      <button
                         className="remove-btn"
                         onClick={() => dispatch(removeFromCart(item.id) as any)}
                       >
@@ -92,9 +96,7 @@ const Cart = () => {
                 <span>Итого:</span>
                 <span>{total} ₽</span>
               </div>
-              <button className="checkout-btn">
-                Оформить заказ
-              </button>
+              <button className="checkout-btn">Оформить заказ</button>
             </div>
           </>
         )}
@@ -103,4 +105,4 @@ const Cart = () => {
   );
 };
 
-export default Cart; 
+export default Cart;

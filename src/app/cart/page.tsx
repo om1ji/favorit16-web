@@ -1,16 +1,16 @@
 "use client";
 
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Link from 'next/link';
-import { 
-  selectCartItems, 
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Link from "next/link";
+import {
+  selectCartItems,
   selectCartTotal,
   removeFromCart,
   updateCartItem,
-} from '@/redux/features/cartSlice';
-import { AppDispatch } from '@/redux/store';
-import './cart.scss';
+} from "@/redux/features/cartSlice";
+import { AppDispatch } from "@/redux/store";
+import "./cart.scss";
 
 const CartPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,10 +18,10 @@ const CartPage = () => {
   const total = useSelector(selectCartTotal);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
-      maximumFractionDigits: 0
+    return new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: "RUB",
+      maximumFractionDigits: 0,
     }).format(price);
   };
 
@@ -60,35 +60,48 @@ const CartPage = () => {
 
         <div className="cart-content">
           <div className="cart-items">
-            {items.map(item => (
+            {items.map((item) => (
               <div key={item.id} className="cart-item">
                 <div className="item-image">
                   <img src={item.product.image} alt={item.product.name} />
                 </div>
                 <div className="item-details">
-                  <Link href={`/product/${item.product.id}`} className="item-title">
+                  <Link
+                    href={`/product/${item.product.id}`}
+                    className="item-title"
+                  >
                     {item.product.name}
                   </Link>
                   <div className="item-controls">
                     <div className="quantity-selector">
-                      <button 
-                        onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.id, item.quantity - 1)
+                        }
                         disabled={item.quantity <= 1}
-                      >−</button>
+                      >
+                        −
+                      </button>
                       <span>{item.quantity}</span>
-                      <button 
-                        onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                      >+</button>
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.id, item.quantity + 1)
+                        }
+                      >
+                        +
+                      </button>
                     </div>
                     <div className="item-price">
-                      <span className="price-per-item">{formatPrice(item.product.price)}</span>
+                      <span className="price-per-item">
+                        {formatPrice(item.product.price)}
+                      </span>
                       {item.quantity > 1 && (
                         <span className="total-price">
                           {formatPrice(item.product.price * item.quantity)}
                         </span>
                       )}
                     </div>
-                    <button 
+                    <button
                       className="remove-btn"
                       onClick={() => handleRemove(item.id)}
                     >
@@ -103,7 +116,10 @@ const CartPage = () => {
           <div className="cart-summary">
             <h2>Итого</h2>
             <div className="summary-row">
-              <span>Товары ({items.reduce((acc, item) => acc + item.quantity, 0)} шт.):</span>
+              <span>
+                Товары ({items.reduce((acc, item) => acc + item.quantity, 0)}{" "}
+                шт.):
+              </span>
               <span>{formatPrice(total)}</span>
             </div>
             <div className="summary-row">
@@ -114,9 +130,7 @@ const CartPage = () => {
               <span>К оплате:</span>
               <span>{formatPrice(total)}</span>
             </div>
-            <button className="checkout-btn">
-              Оформить заказ
-            </button>
+            <button className="checkout-btn">Оформить заказ</button>
           </div>
         </div>
       </div>
@@ -124,4 +138,4 @@ const CartPage = () => {
   );
 };
 
-export default CartPage; 
+export default CartPage;

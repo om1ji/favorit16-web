@@ -4,80 +4,82 @@
   padding: 0;
   position: relative;
   width: 100%;
-  
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
   }
-  
+
   .categories-list {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     -ms-overflow-style: none; // IE и Edge
     scrollbar-width: none; // Firefox
-    
+
     &::-webkit-scrollbar {
       display: none; // Chrome, Safari и Opera
     }
   }
-  
+
   .loading-categories {
     padding: 10px 15px;
     font-size: 14px;
     color: #666;
-    
+
     &::after {
       content: "";
       display: inline-block;
       margin-left: 8px;
       width: 14px;
       height: 14px;
-      border: 2px solid #4B8D5F;
+      border: 2px solid #4b8d5f;
       border-radius: 50%;
       border-top-color: transparent;
       animation: spin 1s linear infinite;
     }
   }
-  
+
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
   }
-  
+
   .category-item {
     position: relative;
-    
+
     &.active .category-link {
-      background-color: #4B8D5F;
+      background-color: #4b8d5f;
       color: white;
     }
-    
+
     &:hover .category-link {
       background-color: #e8e8e8;
     }
-    
+
     &.active:hover .category-link {
       background-color: #3a7049;
     }
   }
-  
+
   .category-link {
     display: block;
     padding: 12px 20px;
     color: #333;
     font-size: 14px;
     text-decoration: none;
-    transition: background-color 0.2s, color 0.2s;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
     white-space: nowrap;
-    
+
     &:hover {
       text-decoration: none;
     }
   }
-  
+
   // Стили для выпадающего списка брендов
   .brands-dropdown {
     position: absolute;
@@ -90,7 +92,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 10;
     padding: 15px;
-    
+
     h4 {
       margin: 0 0 10px;
       font-size: 14px;
@@ -99,27 +101,27 @@
       border-bottom: 1px solid #eee;
       padding-bottom: 8px;
     }
-    
+
     .brands-list {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 8px;
     }
-    
+
     .brand-link {
       display: flex;
       align-items: center;
       padding: 5px 0;
-      color: #333;
+      color: #fff;
       font-size: 13px;
       text-decoration: none;
       transition: color 0.2s;
-      
+
       &:hover {
-        color: #4B8D5F;
+        color: #4b8d5f;
         text-decoration: none;
       }
-      
+
       .brand-logo {
         display: flex;
         align-items: center;
@@ -127,28 +129,28 @@
         width: 24px;
         height: 24px;
         margin-right: 8px;
-        
+
         img {
           max-width: 100%;
           max-height: 100%;
           object-fit: contain;
         }
       }
-      
+
       .product-count {
         margin-left: 5px;
         font-size: 11px;
         color: #999;
       }
     }
-    
+
     .no-brands {
       color: #999;
       font-size: 13px;
       font-style: italic;
     }
   }
-  
+
   // Адаптивность
   @media (max-width: 768px) {
     .brands-dropdown {
@@ -159,7 +161,7 @@
       width: 100%;
       max-height: 60vh;
       overflow-y: auto;
-      
+
       .brands-list {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -172,16 +174,16 @@
   color: #999;
   font-size: 13px;
   text-align: center;
-  
+
   &::after {
     content: "";
     display: inline-block;
     margin-left: 8px;
     width: 14px;
     height: 14px;
-    border: 2px solid #4B8D5F;
+    border: 2px solid #4b8d5f;
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin 1s linear infinite;
   }
-} 
+}

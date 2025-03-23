@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import productsReducer from './features/productsSlice';
-import authReducer from './features/authSlice';
-import dashboardReducer from './features/dashboardSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import productsReducer from "./features/productsSlice";
+import authReducer from "./features/authSlice";
+import dashboardReducer from "./features/dashboardSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,4 +12,4 @@ export const store = configureStore({
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch; 
+export type AppDispatch = typeof store.dispatch;

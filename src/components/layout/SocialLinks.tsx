@@ -1,8 +1,16 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useSocialMedia } from '@/hooks/useConfig';
-import { FaInstagram, FaTelegram, FaWhatsapp, FaFacebookF, FaTwitter, FaYoutube, FaVk } from 'react-icons/fa';
+import React from "react";
+import { useSocialMedia } from "@/hooks/useConfig";
+import {
+  FaInstagram,
+  FaTelegram,
+  FaWhatsapp,
+  FaFacebookF,
+  FaTwitter,
+  FaYoutube,
+  FaVk,
+} from "react-icons/fa";
 
 // Маппинг названий иконок к компонентам
 const iconMap: Record<string, React.ElementType> = {
@@ -12,7 +20,7 @@ const iconMap: Record<string, React.ElementType> = {
   FaFacebookF,
   FaTwitter,
   FaYoutube,
-  FaVk
+  FaVk,
 };
 
 interface SocialLinksProps {
@@ -20,29 +28,35 @@ interface SocialLinksProps {
   iconClassName?: string;
 }
 
-export default function SocialLinks({ className = '', iconClassName = 'h-6 w-6' }: SocialLinksProps) {
+export default function SocialLinks({
+  className = "",
+  iconClassName = "h-6 w-6",
+}: SocialLinksProps) {
   const { data: socialLinks, loading, error } = useSocialMedia();
-  
+
   if (loading) {
     return (
       <div className={`flex space-x-4 ${className}`}>
-        {[1, 2, 3].map(i => (
-          <div key={i} className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"
+          ></div>
         ))}
       </div>
     );
   }
-  
+
   if (error || !socialLinks) {
-    console.error('Social links error:', error);
+    console.error("Social links error:", error);
     return null;
   }
-  
+
   return (
     <div className={`flex space-x-4 ${className}`}>
-      {socialLinks.map(social => {
+      {Object.values(socialLinks).map((social) => {
         const IconComponent = iconMap[social.icon];
-        
+
         return (
           <a
             key={social.id}
@@ -58,4 +72,4 @@ export default function SocialLinks({ className = '', iconClassName = 'h-6 w-6' 
       })}
     </div>
   );
-} 
+}

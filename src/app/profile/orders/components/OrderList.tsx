@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import { ordersAPI } from '@/services/api';
-import './OrderList.scss';
+import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { ordersAPI } from "@/services/api";
+import "./OrderList.scss";
 
 interface OrderItem {
   id: string;
@@ -36,8 +36,8 @@ const OrderList = () => {
         const data = await ordersAPI.getOrders();
         setOrders(data.results);
       } catch (err) {
-        setError('Не удалось загрузить заказы');
-        console.error('Error fetching orders:', err);
+        setError("Не удалось загрузить заказы");
+        console.error("Error fetching orders:", err);
       } finally {
         setLoading(false);
       }
@@ -48,13 +48,13 @@ const OrderList = () => {
 
   const getStatusLabel = (status: string) => {
     const statusMap: Record<string, { label: string; className: string }> = {
-      pending: { label: 'Ожидает оплаты', className: 'pending' },
-      processing: { label: 'В обработке', className: 'processing' },
-      shipped: { label: 'Отправлен', className: 'shipped' },
-      delivered: { label: 'Доставлен', className: 'delivered' },
-      cancelled: { label: 'Отменён', className: 'cancelled' }
+      pending: { label: "Ожидает оплаты", className: "pending" },
+      processing: { label: "В обработке", className: "processing" },
+      shipped: { label: "Отправлен", className: "shipped" },
+      delivered: { label: "Доставлен", className: "delivered" },
+      cancelled: { label: "Отменён", className: "cancelled" },
     };
-    return statusMap[status] || { label: status, className: 'default' };
+    return statusMap[status] || { label: status, className: "default" };
   };
 
   if (loading) {
@@ -93,11 +93,15 @@ const OrderList = () => {
             <div className="order-info">
               <span className="order-number">Заказ №{order.id}</span>
               <span className="order-date">
-                {format(new Date(order.created_at), 'd MMMM yyyy', { locale: ru })}
+                {format(new Date(order.created_at), "d MMMM yyyy", {
+                  locale: ru,
+                })}
               </span>
             </div>
             <div className="order-status">
-              <span className={`status-badge ${getStatusLabel(order.status).className}`}>
+              <span
+                className={`status-badge ${getStatusLabel(order.status).className}`}
+              >
                 {getStatusLabel(order.status).label}
               </span>
             </div>
@@ -130,4 +134,4 @@ const OrderList = () => {
   );
 };
 
-export default OrderList; 
+export default OrderList;

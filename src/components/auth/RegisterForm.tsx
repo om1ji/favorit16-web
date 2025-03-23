@@ -1,10 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
-import { register, selectAuthError, selectAuthLoading } from '@/redux/features/authSlice';
-import { AppDispatch } from '@/redux/store';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import {
+  register,
+  selectAuthError,
+  selectAuthLoading,
+} from "@/redux/features/authSlice";
+import { AppDispatch } from "@/redux/store";
 
 const RegisterForm = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -13,12 +17,12 @@ const RegisterForm = () => {
   const loading = useSelector(selectAuthLoading);
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    password2: '',
-    first_name: '',
-    last_name: '',
-    phone: '',
+    email: "",
+    password: "",
+    password2: "",
+    first_name: "",
+    last_name: "",
+    phone: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +36,7 @@ const RegisterForm = () => {
     e.preventDefault();
     try {
       await dispatch(register(formData)).unwrap();
-      router.push('/');
+      router.push("/");
     } catch (error) {
       // Ошибка уже обработана в slice
     }
@@ -140,9 +144,7 @@ const RegisterForm = () => {
           </div>
 
           {error && (
-            <div className="text-red-500 text-sm text-center">
-              {error}
-            </div>
+            <div className="text-red-500 text-sm text-center">{error}</div>
           )}
 
           <div>
@@ -151,7 +153,7 @@ const RegisterForm = () => {
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
-              {loading ? 'Регистрация...' : 'Зарегистрироваться'}
+              {loading ? "Регистрация..." : "Зарегистрироваться"}
             </button>
           </div>
         </form>
@@ -160,4 +162,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm; 
+export default RegisterForm;

@@ -1,6 +1,7 @@
 export interface Category {
   id: string;
   name: string;
+  slug: string;
   image: string | null;
   parent: string | null;
   children: Category[];
@@ -26,6 +27,7 @@ export interface ProductImage {
 export interface Product {
   id: string;
   name: string;
+  slug: string;
   description: string;
   price: number;
   old_price: number | null;
@@ -40,7 +42,7 @@ export interface Product {
   is_available: boolean;
   has_discount: boolean;
   discount_percentage: number;
-  
+
   // Tire specific fields
   diameter: number | null;
   width: number | null;
@@ -77,7 +79,7 @@ export interface ProductFilters {
   is_available?: boolean;
   has_discount?: boolean;
   in_stock?: boolean;
-  
+
   // Tire specific filters
   diameter?: number;
   min_diameter?: number;
@@ -88,8 +90,8 @@ export interface ProductFilters {
   profile?: number;
   min_profile?: number;
   max_profile?: number;
-  
+
   search?: string;
   ordering?: string;
   page?: number;
-} 
+}

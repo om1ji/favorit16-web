@@ -4,7 +4,7 @@
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
+
   h3 {
     margin-top: 0;
     margin-bottom: 16px;
@@ -12,7 +12,7 @@
     font-weight: 600;
     color: #333;
   }
-  
+
   .loading-filters {
     min-height: 150px;
     display: flex;
@@ -20,36 +20,36 @@
     justify-content: center;
     color: #777;
     font-size: 14px;
-    
+
     &::after {
       content: "";
       display: inline-block;
       margin-left: 8px;
       width: 16px;
       height: 16px;
-      border: 2px solid #4B8D5F;
+      border: 2px solid #4b8d5f;
       border-radius: 50%;
       border-top-color: transparent;
       animation: spin 1s linear infinite;
     }
   }
-  
+
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
   }
-  
+
   .filter-group {
     margin-bottom: 12px;
-    
+
     label {
       display: block;
       margin-bottom: 6px;
       font-size: 14px;
       color: #666;
     }
-    
+
     select {
       width: 100%;
       padding: 8px 12px;
@@ -59,12 +59,12 @@
       font-size: 14px;
       color: #333;
       transition: border-color 0.2s;
-      
+
       &:focus {
         outline: none;
-        border-color: #4B8D5F;
+        border-color: #4b8d5f;
       }
-      
+
       &:disabled {
         background-color: #f0f0f0;
         color: #999;
@@ -72,7 +72,7 @@
       }
     }
   }
-  
+
   .reset-filters {
     display: block;
     width: 100%;
@@ -85,9 +85,9 @@
     color: #333;
     cursor: pointer;
     transition: background-color 0.2s;
-    
+
     &:hover {
       background-color: #e0e0e0;
     }
   }
-} 
+}

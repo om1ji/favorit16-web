@@ -1,26 +1,36 @@
 "use client";
 
-import React from 'react';
-import './MobileFilters.scss';
+import React from "react";
+import "./MobileFilters.scss";
 
 const MobileFilters = ({ isOpen, onClose }) => {
   return (
-    <div className={`mobile-filters ${isOpen ? 'is-open' : ''}`}>
+    <div className={`mobile-filters ${isOpen ? "is-open" : ""}`}>
       <div className="mobile-filters-overlay" onClick={onClose}></div>
       <div className="mobile-filters-content">
         <div className="mobile-filters-header">
           <h2>Фильтры</h2>
-          <button className="close-btn" onClick={onClose}>&times;</button>
+          <button className="close-btn" onClick={onClose}>
+            &times;
+          </button>
         </div>
-        
+
         <div className="mobile-filters-body">
           <div className="filter-section">
             <h3>Категории</h3>
             <ul>
-              <li><a href="/category/phones">Телефоны</a></li>
-              <li><a href="/category/laptops">Ноутбуки</a></li>
-              <li><a href="/category/photo">Фото и видео</a></li>
-              <li><a href="/category/accessories">Аксессуары</a></li>
+              <li>
+                <a href="/category/phones">Телефоны</a>
+              </li>
+              <li>
+                <a href="/category/laptops">Ноутбуки</a>
+              </li>
+              <li>
+                <a href="/category/photo">Фото и видео</a>
+              </li>
+              <li>
+                <a href="/category/accessories">Аксессуары</a>
+              </li>
             </ul>
           </div>
 
@@ -56,4 +66,4 @@ const MobileFilters = ({ isOpen, onClose }) => {
   );
 };
 
-export default MobileFilters; 
+export default MobileFilters;

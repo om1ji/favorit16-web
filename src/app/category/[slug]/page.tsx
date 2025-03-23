@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
 import {
   fetchProducts,
   fetchCategories,
@@ -12,11 +12,12 @@ import {
   selectError,
   selectTotalProducts,
   selectCurrentPage,
-  setCurrentPage
-} from '@/redux/features/productsSlice';
-import { Product } from '@/types/api';
-import Link from 'next/link';
-import '@/app/catalog/catalog.scss';
+  setCurrentPage,
+} from "@/redux/features/productsSlice";
+import { Product } from "@/types/api";
+import Link from "next/link";
+import "@/app/catalog/catalog.scss";
+import api from "@/lib/api";
 
 interface Props {
   params: Promise<{
@@ -34,7 +35,9 @@ export default function CategoryPage({ params }: Props) {
   const totalCount = useSelector(selectTotalProducts);
   const currentPage = useSelector(selectCurrentPage);
 
-  const currentCategory = categories.find(cat => cat.id === resolvedParams.id);
+  const currentCategory = categories.find(
+    (cat) => cat.id === resolvedParams.id,
+  );
 
   console.log(products);
 
@@ -43,19 +46,23 @@ export default function CategoryPage({ params }: Props) {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchProducts({
-      category: resolvedParams.id,
-      page: currentPage,
-    }));
+    dispatch(
+      fetchProducts({
+        category: resolvedParams.id,
+        page: currentPage,
+      }),
+    );
   }, [dispatch, resolvedParams.id, currentPage]);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setCurrentPage(1));
-    dispatch(fetchProducts({
-      category: resolvedParams.id,
-      ordering: e.target.value,
-      page: 1,
-    }));
+    dispatch(
+      fetchProducts({
+        category: resolvedParams.id,
+        ordering: e.target.value,
+        page: 1,
+      }),
+    );
   };
 
   const handlePageChange = (page: number) => {
@@ -76,17 +83,14 @@ export default function CategoryPage({ params }: Props) {
         <div className="breadcrumbs mb-4">
           <Link href="/catalog">Каталог</Link>
           <span> / </span>
-          <span>{currentCategory?.name || 'Категория'}</span>
+          <span>{currentCategory?.name || "Категория"}</span>
         </div>
 
-        <h1>{currentCategory?.name || 'Категория'}</h1>
-        
+        <h1>{currentCategory?.name || "Категория"}</h1>
+
         <div className="catalog-filters">
           <div className="sorting">
-            <select 
-              className="sort-select"
-              onChange={handleSortChange}
-            >
+            <select className="sort-select" onChange={handleSortChange}>
               <option value="">По умолчанию</option>
               <option value="price">По возрастанию цены</option>
               <option value="-price">По убыванию цены</option>
@@ -98,28 +102,30 @@ export default function CategoryPage({ params }: Props) {
 
         <div className="products-grid">
           {products.map((product: Product) => (
-            <Link 
-              href={`/product/${product.id}`} 
+            <Link
+              href={`/product/${product.id}`}
               key={product.id}
               className="product-card-link"
             >
               <div className="product-card">
                 <div className="product-image">
                   {product.feature_image ? (
-                    <img 
+                    <img
                       src={product.feature_image.image}
-                      alt={product.feature_image.alt_text || product.name} 
+                      alt={product.feature_image.alt_text || product.name}
                     />
                   ) : product.images?.length > 0 ? (
-                    <img 
+                    <img
                       src={product.images[0].image}
-                      alt={product.images[0].alt_text || product.name} 
+                      alt={product.images[0].alt_text || product.name}
                     />
                   ) : null}
                 </div>
                 <div className="product-info">
                   <h3>{product.name}</h3>
-                  <div className="product-category">{product.category.name}</div>
+                  <div className="product-category">
+                    {product.category.name}
+                  </div>
                   <div className="product-price">
                     {product.old_price && (
                       <span className="old-price">{product.old_price} ₽</span>
@@ -129,7 +135,7 @@ export default function CategoryPage({ params }: Props) {
                   {!product.in_stock ? (
                     <div className="out-of-stock">Нет в наличии</div>
                   ) : (
-                    <button 
+                    <button
                       className="add-to-cart"
                       onClick={(e) => {
                         e.preventDefault();
@@ -150,7 +156,7 @@ export default function CategoryPage({ params }: Props) {
             {Array.from({ length: Math.ceil(totalCount / 10) }, (_, i) => (
               <button
                 key={i + 1}
-                className={currentPage === i + 1 ? 'active' : ''}
+                className={currentPage === i + 1 ? "active" : ""}
                 onClick={() => handlePageChange(i + 1)}
               >
                 {i + 1}

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '@/redux/features/cartSlice';
-import './Product.scss';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/redux/features/cartSlice";
+import "./Product.scss";
 
 interface ProductProps {
   product: {
@@ -30,27 +30,27 @@ const Product: React.FC<ProductProps> = ({ product }) => {
 
   // Моки для характеристик товара
   const specs = {
-    'Производитель': 'Apple',
-    'Модель': 'iPhone 8',
-    'Объем памяти': '64 ГБ',
-    'Цвет': 'Красный',
-    'Операционная система': 'iOS',
-    'Гарантия': '1 год'
+    Производитель: "Apple",
+    Модель: "iPhone 8",
+    "Объем памяти": "64 ГБ",
+    Цвет: "Красный",
+    "Операционная система": "iOS",
+    Гарантия: "1 год",
   };
 
   // Моки для галереи изображений
   const gallery = [
     product.image,
-    '/products/iphone-8-red-2.jpg',
-    '/products/iphone-8-red-3.jpg',
-    '/products/iphone-8-red-4.jpg'
+    "/products/iphone-8-red-2.jpg",
+    "/products/iphone-8-red-3.jpg",
+    "/products/iphone-8-red-4.jpg",
   ];
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
-      maximumFractionDigits: 0
+    return new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: "RUB",
+      maximumFractionDigits: 0,
     }).format(price);
   };
 
@@ -61,12 +61,14 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   };
 
   const handleAddToCart = () => {
-    dispatch(addToCart({
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      image: product.image
-    }));
+    dispatch(
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+      }),
+    );
   };
 
   return (
@@ -85,7 +87,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
               {gallery.map((image, index) => (
                 <button
                   key={index}
-                  className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
+                  className={`thumbnail ${selectedImage === index ? "active" : ""}`}
                   onClick={() => setSelectedImage(index)}
                 >
                   <img src={image} alt={`${product.title} ${index + 1}`} />
@@ -97,10 +99,11 @@ const Product: React.FC<ProductProps> = ({ product }) => {
           {/* Информация о товаре */}
           <div className="product-info">
             <h1 className="product-title">{product.title}</h1>
-            
+
             <div className="product-rating">
               <div className="stars">
-                {'★'.repeat(product.rating)}{'☆'.repeat(5-product.rating)}
+                {"★".repeat(product.rating)}
+                {"☆".repeat(5 - product.rating)}
               </div>
               <span className="rating-count">12 отзывов</span>
             </div>
@@ -112,9 +115,13 @@ const Product: React.FC<ProductProps> = ({ product }) => {
                 </span>
               ) : (
                 <>
-                  <span className="current-price">{formatPrice(product.price)}</span>
+                  <span className="current-price">
+                    {formatPrice(product.price)}
+                  </span>
                   {product.oldPrice && (
-                    <span className="old-price">{formatPrice(product.oldPrice)}</span>
+                    <span className="old-price">
+                      {formatPrice(product.oldPrice)}
+                    </span>
                   )}
                 </>
               )}
@@ -122,31 +129,32 @@ const Product: React.FC<ProductProps> = ({ product }) => {
 
             <div className="product-actions">
               <div className="quantity-selector">
-                <button 
+                <button
                   onClick={() => handleQuantityChange(quantity - 1)}
                   disabled={quantity <= 1}
-                >−</button>
+                >
+                  −
+                </button>
                 <input
                   type="number"
                   value={quantity}
-                  onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                  onChange={(e) =>
+                    handleQuantityChange(parseInt(e.target.value) || 1)
+                  }
                   min="1"
                   max="99"
                 />
-                <button 
+                <button
                   onClick={() => handleQuantityChange(quantity + 1)}
                   disabled={quantity >= 99}
-                >+</button>
+                >
+                  +
+                </button>
               </div>
-              <button 
-                className="add-to-cart-btn"
-                onClick={handleAddToCart}
-              >
+              <button className="add-to-cart-btn" onClick={handleAddToCart}>
                 Добавить в корзину
               </button>
-              <button className="add-to-favorites-btn">
-                ♡
-              </button>
+              <button className="add-to-favorites-btn">♡</button>
             </div>
 
             <div className="product-description">
@@ -180,4 +188,4 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   );
 };
 
-export default Product; 
+export default Product;

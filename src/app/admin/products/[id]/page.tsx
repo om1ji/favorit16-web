@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import ProductForm from '../components/ProductForm';
-import { adminAPI } from '@/services/api';
+import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import ProductForm from "../components/ProductForm";
+import { adminAPI } from "@/services/api";
 
 interface ProductFormData {
   id?: string;
@@ -23,9 +23,17 @@ interface ProductFormData {
   }>;
 }
 
-const EditProductPage = () => {
-  const params = useParams();
-  const id = params.id as string;
+interface Props {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+const EditProductPage = ({ params }: Props) => {
+  // Используем React.use() для "разворачивания" Promise с параметрами
+  const resolvedParams = React.use(params);
+  const id = resolvedParams.id;
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [productData, setProductData] = useState<ProductFormData | null>(null);
@@ -33,7 +41,7 @@ const EditProductPage = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       if (!id) {
-        setError('Product ID is required');
+        setError("Product ID is required");
         setLoading(false);
         return;
       }
@@ -46,7 +54,7 @@ const EditProductPage = () => {
           name: data.name,
           category_id: data.category.id,
           price: Number(data.price).toFixed(2),
-          old_price: data.old_price ? Number(data.old_price).toFixed(2) : '',
+          old_price: data.old_price ? Number(data.old_price).toFixed(2) : "",
           description: data.description,
           in_stock: data.in_stock,
           quantity: data.quantity,
@@ -55,12 +63,14 @@ const EditProductPage = () => {
             url: img.image,
             thumbnail: img.thumbnail,
             alt_text: img.alt_text,
-            is_feature: img.is_feature
-          }))
+            is_feature: img.is_feature,
+          })),
         });
       } catch (error) {
-        console.error('Error fetching product:', error);
-        setError(error instanceof Error ? error.message : 'Failed to fetch product');
+        console.error("Error fetching product:", error);
+        setError(
+          error instanceof Error ? error.message : "Failed to fetch product",
+        );
       } finally {
         setLoading(false);
       }
@@ -85,4 +95,4 @@ const EditProductPage = () => {
   );
 };
 
-export default EditProductPage; 
+export default EditProductPage;

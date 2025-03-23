@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
 import {
   fetchProducts,
   fetchCategories,
@@ -12,10 +12,10 @@ import {
   selectProductsError,
   selectProductsTotalCount,
   selectProductsFilters,
-  setFilters
-} from '@/redux/features/productsSlice';
-import Link from 'next/link';
-import './Catalog.scss';
+  setFilters,
+} from "@/redux/features/productsSlice";
+import Link from "next/link";
+import "./Catalog.scss";
 
 const Catalog = () => {
   const dispatch = useDispatch();
@@ -46,10 +46,6 @@ const Catalog = () => {
     dispatch(setFilters({ page }));
   };
 
-  if (loading) {
-    return <div className="loading">Загрузка...</div>;
-  }
-
   if (error) {
     return <div className="error">{error}</div>;
   }
@@ -58,24 +54,26 @@ const Catalog = () => {
     <div className="catalog-page">
       <div className="container">
         <h1>Каталог товаров</h1>
-        
+
         <div className="catalog-content">
           <aside className="catalog-filters">
             <div className="filter-section">
               <h3>Категории</h3>
               <ul>
                 <li>
-                  <button 
-                    className={!filters.category ? 'active' : ''} 
-                    onClick={() => handleCategoryChange('')}
+                  <button
+                    className={!filters.category ? "active" : ""}
+                    onClick={() => handleCategoryChange("")}
                   >
-                    Все категории
+                    Каталог
                   </button>
                 </li>
-                {categories.map(category => (
+                {categories.map((category) => (
                   <li key={category.id}>
                     <button
-                      className={filters.category === category.id ? 'active' : ''}
+                      className={
+                        filters.category === category.id ? "active" : ""
+                      }
                       onClick={() => handleCategoryChange(category.id)}
                     >
                       {category.name}
@@ -86,8 +84,8 @@ const Catalog = () => {
             </div>
             <div className="filter-section">
               <h3>Сортировка</h3>
-              <select 
-                value={filters.ordering || ''} 
+              <select
+                value={filters.ordering || ""}
                 onChange={handleSortChange}
               >
                 <option value="">По умолчанию</option>
@@ -101,21 +99,29 @@ const Catalog = () => {
 
           <div className="catalog-products">
             <div className="products-grid">
-              {products.map(product => (
+              {products.map((product) => (
                 <div key={product.id} className="product-card">
-                  <Link href={`/product/${product.id}`} className="product-image">
+                  <Link
+                    href={`/product/${product.id}`}
+                    className="product-image"
+                  >
                     {product.feature_image && (
-                      <img 
+                      <img
                         src={product.feature_image.image}
                         alt={product.feature_image.alt_text || product.name}
                       />
                     )}
                     {product.has_discount && (
-                      <span className="discount-badge">−{product.discount_percentage}%</span>
+                      <span className="discount-badge">
+                        −{product.discount_percentage}%
+                      </span>
                     )}
                   </Link>
                   <div className="product-info">
-                    <Link href={`/product/${product.id}`} className="product-title">
+                    <Link
+                      href={`/product/${product.id}`}
+                      className="product-title"
+                    >
                       {product.name}
                     </Link>
                     <div className="product-price">
@@ -125,7 +131,7 @@ const Catalog = () => {
                       )}
                     </div>
                     {product.in_stock ? (
-                      <button 
+                      <button
                         className="add-to-cart-btn"
                         onClick={(e) => {
                           e.preventDefault();
@@ -148,4 +154,4 @@ const Catalog = () => {
   );
 };
 
-export default Catalog; 
+export default Catalog;

@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   MagnifyingGlassIcon,
   FunnelIcon,
-  PlusIcon
-} from '@heroicons/react/24/outline';
-import { adminAPI } from '@/services/api';
-import './products.scss';
-import axios from 'axios';
-import { AdminProduct, AdminProductsResponse } from '@/types/product';
+  PlusIcon,
+} from "@heroicons/react/24/outline";
+import { adminAPI } from "@/services/api";
+import "./products.scss";
+import axios from "axios";
+import { AdminProduct, AdminProductsResponse } from "@/types/product";
 
 const ProductsPage = () => {
   const router = useRouter();
@@ -21,23 +21,22 @@ const ProductsPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({
-    search: '',
-    category: '',
-    status: '',
-    min_price: '',
-    max_price: '',
-    ordering: '-created_at'
+    search: "",
+    category: "",
+    status: "",
+    min_price: "",
+    max_price: "",
+    ordering: "-created_at",
   });
   const [showFilters, setShowFilters] = useState(false);
 
   const fetchProducts = async () => {
     try {
-      setLoading(true);
       const params: Record<string, string> = {
         page: page.toString(),
         ...Object.fromEntries(
-          Object.entries(filters).filter(([_, value]) => value !== '')
-        )
+          Object.entries(filters).filter(([_, value]) => value !== ""),
+        ),
       };
 
       const data = await adminAPI.getProducts(params);
@@ -46,21 +45,21 @@ const ProductsPage = () => {
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 401) {
-          setError('Необходима авторизация. Пожалуйста, войдите в систему.');
+          setError("Необходима авторизация. Пожалуйста, войдите в систему.");
         } else if (err.response?.status === 403) {
-          setError('У вас нет прав для просмотра списка товаров.');
+          setError("У вас нет прав для просмотра списка товаров.");
         } else if (err.response?.status === 404) {
-          setError('API эндпоинт не найден. Пожалуйста, свяжитесь с администратором.');
+          setError(
+            "API эндпоинт не найден. Пожалуйста, свяжитесь с администратором.",
+          );
         } else if (err.response?.data?.message) {
           setError(err.response.data.message);
         } else {
-          setError('Не удалось загрузить товары. Попробуйте позже.');
+          setError("Не удалось загрузить товары. Попробуйте позже.");
         }
       } else {
-        setError('Произошла неизвестная ошибка. Попробуйте позже.');
+        setError("Произошла неизвестная ошибка. Попробуйте позже.");
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -74,26 +73,15 @@ const ProductsPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Вы уверены, что хотите удалить этот товар?')) return;
+    if (!confirm("Вы уверены, что хотите удалить этот товар?")) return;
 
     try {
       await adminAPI.deleteProduct(id);
       fetchProducts();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не удалось удалить товар');
+      setError(err instanceof Error ? err.message : "Не удалось удалить товар");
     }
   };
-
-  if (loading) {
-    return (
-      <div className="admin-products">
-        <div className="loading">
-          <div className="loading-spinner"></div>
-          <p>Загрузка товаров...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -131,14 +119,16 @@ const ProductsPage = () => {
             type="text"
             placeholder="Поиск товаров..."
             value={filters.search}
-            onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+            onChange={(e) =>
+              setFilters((prev) => ({ ...prev, search: e.target.value }))
+            }
           />
           <button type="submit">
             <MagnifyingGlassIcon className="w-5 h-5" />
           </button>
         </form>
 
-        <button 
+        <button
           className="filter-toggle"
           onClick={() => setShowFilters(!showFilters)}
         >
@@ -153,7 +143,9 @@ const ProductsPage = () => {
             <label>Статус</label>
             <select
               value={filters.status}
-              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, status: e.target.value }))
+              }
             >
               <option value="">Все</option>
               <option value="in_stock">В наличии</option>
@@ -168,13 +160,17 @@ const ProductsPage = () => {
                 type="number"
                 placeholder="От"
                 value={filters.min_price}
-                onChange={(e) => setFilters(prev => ({ ...prev, min_price: e.target.value }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, min_price: e.target.value }))
+                }
               />
               <input
                 type="number"
                 placeholder="До"
                 value={filters.max_price}
-                onChange={(e) => setFilters(prev => ({ ...prev, max_price: e.target.value }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, max_price: e.target.value }))
+                }
               />
             </div>
           </div>
@@ -183,7 +179,9 @@ const ProductsPage = () => {
             <label>Сортировка</label>
             <select
               value={filters.ordering}
-              onChange={(e) => setFilters(prev => ({ ...prev, ordering: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, ordering: e.target.value }))
+              }
             >
               <option value="-created_at">Сначала новые</option>
               <option value="created_at">Сначала старые</option>
@@ -210,31 +208,34 @@ const ProductsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map(product => (
+            {products.map((product) => (
               <tr key={product.id}>
                 <td className="product-image">
                   {product.images?.length > 0 && (
-                    <img 
-                      src={product.images[0].thumbnail} 
+                    <img
+                      src={product.images[0].thumbnail}
                       alt={product.images[0].alt_text}
                     />
                   )}
                 </td>
                 <td>{product.name}</td>
                 <td>{product.category.name}</td>
-                <td>{product.price.toLocaleString('ru-RU')} ₽</td>
+                <td>{product.price.toLocaleString("ru-RU")} ₽</td>
                 <td>
-                  <span className={`status ${product.in_stock ? 'in-stock' : 'out-of-stock'}`}>
-                    {product.in_stock ? 'В наличии' : 'Нет в наличии'}
+                  <span
+                    className={`status ${product.in_stock ? "in-stock" : "out-of-stock"}`}
+                  >
+                    {product.in_stock ? "В наличии" : "Нет в наличии"}
                   </span>
                 </td>
                 <td>
                   <div className="sales-info">
                     <span>
-                      {(product.total_orders ?? 0).toLocaleString('ru-RU')} заказов
+                      {(product.total_orders ?? 0).toLocaleString("ru-RU")}{" "}
+                      заказов
                     </span>
                     <span className="revenue">
-                      {(product.total_revenue ?? 0).toLocaleString('ru-RU')} ₽
+                      {(product.total_revenue ?? 0).toLocaleString("ru-RU")} ₽
                     </span>
                   </div>
                 </td>
@@ -263,7 +264,7 @@ const ProductsPage = () => {
       {totalPages > 1 && (
         <div className="pagination">
           <button
-            onClick={() => setPage(p => Math.max(1, p - 1))}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
           >
             Назад
@@ -272,7 +273,7 @@ const ProductsPage = () => {
             Страница {page} из {totalPages}
           </span>
           <button
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
           >
             Вперед
@@ -283,4 +284,4 @@ const ProductsPage = () => {
   );
 };
 
-export default ProductsPage; 
+export default ProductsPage;

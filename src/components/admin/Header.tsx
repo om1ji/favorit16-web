@@ -1,61 +1,81 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUser, logout } from '@/redux/features/authSlice';
-import { BellIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import './Header.scss';
+import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  MagnifyingGlassIcon,
+  UserCircleIcon,
+  BellIcon,
+  ArrowRightOnRectangleIcon,
+} from "@heroicons/react/24/outline";
+import { authAPI } from "@/services/api";
+import "./Header.scss";
 
-const AdminHeader = () => {
+const Header = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const user = useSelector(selectUser);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = React.useState("");
 
-  const handleLogout = () => {
-    dispatch(logout());
-    router.push('/login');
+  const handleLogout = async () => {
+    try {
+      await authAPI.logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Ошибка при выходе:", error);
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (searchQuery.trim()) {
+      // Реализация поиска по админке - перенаправление на страницу поиска
+      // или вызов метода API в зависимости от требований
+      console.log("Поиск по запросу:", searchQuery);
+    }
   };
 
   return (
     <header className="admin-header">
       <div className="header-content">
-        <div className="header-search">
-          <input
-            type="text"
-            placeholder="Поиск..."
-            className="search-input"
-          />
-        </div>
+        <form className="header-search" onSubmit={handleSearch}>
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Поиск..."
+              className="search-input"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className="search-button">
+              <MagnifyingGlassIcon className="icon" />
+            </button>
+          </div>
+        </form>
 
         <div className="header-actions">
-          <button className="action-btn">
-            <BellIcon className="w-6 h-6" />
+          <button className="action-button">
+            <BellIcon className="icon" />
           </button>
 
-          <div className="profile-menu">
-            <button
-              className="profile-btn"
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
-            >
-              <UserCircleIcon className="w-6 h-6" />
-              <span>{user?.name}</span>
+          <div className="user-dropdown">
+            <button className="user-button">
+              <UserCircleIcon className="icon" />
+              <span className="user-name">Администратор</span>
             </button>
 
-            {isProfileOpen && (
-              <div className="profile-dropdown">
-                <div className="dropdown-header">
-                  <span className="user-name">{user?.name}</span>
-                  <span className="user-email">{user?.email}</span>
-                </div>
-                <div className="dropdown-items">
-                  <button onClick={handleLogout}>
-                    Выйти
-                  </button>
-                </div>
-              </div>
-            )}
+            <div className="dropdown-menu">
+              <Link href="/admin/profile" className="dropdown-item">
+                Профиль
+              </Link>
+              <Link href="/admin/settings" className="dropdown-item">
+                Настройки
+              </Link>
+              <button className="dropdown-item logout" onClick={handleLogout}>
+                <ArrowRightOnRectangleIcon className="icon" />
+                <span>Выйти</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -63,4 +83,4 @@ const AdminHeader = () => {
   );
 };
 
-export default AdminHeader; 
+export default Header;

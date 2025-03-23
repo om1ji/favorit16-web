@@ -38,7 +38,7 @@
   }
 
   .nav-link {
-    color: #333;
+    color: #fff;
     text-decoration: none;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -71,7 +71,7 @@
       }
 
       &:after {
-        content: '▼';
+        content: "▼";
         font-size: 0.8em;
       }
     }
@@ -91,7 +91,7 @@
       .dropdown-item {
         display: block;
         padding: 0.5rem 1rem;
-        color: #333;
+        color: #fff;
         text-decoration: none;
         transition: all 0.2s;
 
@@ -137,4 +137,4 @@
       }
     }
   }
-} 
+}

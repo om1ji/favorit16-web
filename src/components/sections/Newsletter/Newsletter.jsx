@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import './Newsletter.scss';
+import React, { useState } from "react";
+import "./Newsletter.scss";
 
 const Newsletter = () => {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState('');
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Here you would typically handle the newsletter subscription
     // For now, we'll just show a success message
-    setStatus('success');
-    setEmail('');
-    setTimeout(() => setStatus(''), 3000);
+    setStatus("success");
+    setEmail("");
+    setTimeout(() => setStatus(""), 3000);
   };
 
   return (
@@ -33,7 +33,7 @@ const Newsletter = () => {
               />
               <button type="submit">Подписаться</button>
             </div>
-            {status === 'success' && (
+            {status === "success" && (
               <p className="success-message">
                 Спасибо за подписку! Мы отправили вам письмо для подтверждения.
               </p>
@@ -45,4 +45,4 @@ const Newsletter = () => {
   );
 };
 
-export default Newsletter; 
+export default Newsletter;

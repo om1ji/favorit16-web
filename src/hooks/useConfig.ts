@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { NavigationItem, SocialMedia, ContactInfo } from '@/types/config';
+import { useState, useEffect } from "react";
+import { NavigationItem, SocialMedia, ContactInfo } from "@/types/config";
 
 // Универсальный хук для получения конфигураций
 export function useConfig<T>(
-  section: 'navigation' | 'social' | 'contacts' | 'site',
-  params: Record<string, string> = {}
+  section: "navigation" | "social" | "contacts" | "site",
+  params: Record<string, string> = {},
 ): {
   data: T | null;
   loading: boolean;
@@ -20,15 +20,15 @@ export function useConfig<T>(
     async function fetchData() {
       try {
         setLoading(true);
-        
+
         // Формируем URL с параметрами
         const queryParams = new URLSearchParams({ section, ...params });
         const response = await fetch(`/api/config?${queryParams}`);
-        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch ${section}: ${response.statusText}`);
         }
-        
+
         const result = await response.json();
         setData(result);
       } catch (err) {
@@ -38,7 +38,7 @@ export function useConfig<T>(
         setLoading(false);
       }
     }
-    
+
     fetchData();
   }, [section, JSON.stringify(params)]);
 
@@ -46,18 +46,18 @@ export function useConfig<T>(
 }
 
 // Специализированные хуки для конкретных разделов конфигурации
-export function useNavigation(type: 'main' | 'footer' = 'main') {
-  return useConfig<NavigationItem[]>('navigation', { type });
+export function useNavigation(type: "main" | "footer" = "main") {
+  return useConfig<NavigationItem[]>("navigation", { type });
 }
 
 export function useSocialMedia() {
-  return useConfig<SocialMedia[]>('social');
+  return useConfig<SocialMedia[]>("social");
 }
 
 export function useContactInfo() {
-  return useConfig<ContactInfo>('contacts');
+  return useConfig<ContactInfo>("contacts");
 }
 
 export function useSiteInfo() {
-  return useConfig<{ siteName: string; siteDescription: string }>('site');
-} 
+  return useConfig<{ siteName: string; siteDescription: string }>("site");
+}

@@ -40,7 +40,7 @@ export interface Product {
   is_available: boolean;
   has_discount: boolean;
   discount_percentage: number;
-  
+
   // Tire specific fields
   diameter: number | null;
   width: number | null;
@@ -62,7 +62,7 @@ export interface ProductsFilter {
   brand?: string;
   min_price?: number;
   max_price?: number;
-  
+
   // Tire specific filters
   diameter?: number;
   min_diameter?: number;
@@ -73,7 +73,7 @@ export interface ProductsFilter {
   profile?: number;
   min_profile?: number;
   max_profile?: number;
-  
+
   search?: string;
   ordering?: string;
 }
@@ -125,4 +125,4 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
-} 
+}

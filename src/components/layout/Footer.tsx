@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { useSiteInfo } from '@/hooks/useConfig';
-import Navigation from './Navigation';
-import SocialLinks from './SocialLinks';
-import ContactInfo from './ContactInfo';
+import React from "react";
+import Link from "next/link";
+import { useSiteInfo } from "@/hooks/useConfig";
+import Navigation from "./Navigation";
+import SocialLinks from "./SocialLinks";
+import ContactInfo from "./ContactInfo";
 
 export default function Footer() {
   const { data: siteInfo } = useSiteInfo();
@@ -19,12 +19,12 @@ export default function Footer() {
           <div>
             <Link href="/" className="flex items-center">
               <span className="font-bold text-2xl text-white mb-4">
-                {siteInfo?.siteName || 'DotStore'}
+                {siteInfo?.siteName || "Favorit116"}
               </span>
             </Link>
             <p className="text-gray-400 mt-4 mb-6">
-              {siteInfo?.siteDescription || 
-                'Ваш надежный магазин электроники и аксессуаров. Мы предлагаем только качественные товары по доступным ценам.'}
+              {siteInfo?.siteDescription ||
+                "Ваш надежный магазин электроники и аксессуаров. Мы предлагаем только качественные товары по доступным ценам."}
             </p>
             <div className="mb-6">
               <SocialLinks className="flex space-x-3" />
@@ -34,10 +34,10 @@ export default function Footer() {
           {/* Column 2: Navigation */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white">Навигация</h3>
-            <Navigation 
-              type="footer" 
-              className="flex flex-col space-y-2 text-gray-400" 
-              vertical 
+            <Navigation
+              type="footer"
+              className="flex flex-col space-y-2 text-gray-400"
+              vertical
               showIcons={false}
             />
           </div>
@@ -50,9 +50,12 @@ export default function Footer() {
 
           {/* Column 4: Newsletter (optional) */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Подписка на новости</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">
+              Подписка на новости
+            </h3>
             <p className="text-gray-400 mb-4">
-              Подпишитесь на нашу рассылку, чтобы получать информацию о новинках и акциях
+              Подпишитесь на нашу рассылку, чтобы получать информацию о новинках
+              и акциях
             </p>
             <form className="flex flex-col sm:flex-row">
               <input
@@ -72,7 +75,10 @@ export default function Footer() {
 
         {/* Bottom section with copyright */}
         <div className="mt-12 pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
-          <p>© {currentYear} {siteInfo?.siteName || 'DotStore'}. Все права защищены.</p>
+          <p>
+            © {currentYear} {siteInfo?.siteName || "Favorit116"}. Все права
+            защищены.
+          </p>
           <div className="mt-4 md:mt-0 flex space-x-6">
             <Link href="/privacy" className="hover:text-white transition">
               Политика конфиденциальности
@@ -85,4 +91,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-} 
+}

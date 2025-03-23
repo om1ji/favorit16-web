@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import ProductForm from '../components/ProductForm';
+import React from "react";
+import ProductForm from "../components/ProductForm";
 
 const NewProductPage = () => {
   return (
@@ -14,4 +14,4 @@ const NewProductPage = () => {
   );
 };
 
-export default NewProductPage; 
+export default NewProductPage;

@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
-import { fetchCategories, selectCategories } from '@/redux/features/productsSlice';
-import { Category } from '@/types/product';
-import './Navbar.scss';
+import React, { useEffect, useState, useRef } from "react";
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import {
+  fetchCategories,
+  selectCategories,
+} from "@/redux/features/productsSlice";
+import { Category } from "@/types/product";
+import "./Navbar.scss";
 
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,10 +36,10 @@ const Navbar = () => {
     };
 
     calculateVisibleCategories();
-    window.addEventListener('resize', calculateVisibleCategories);
+    window.addEventListener("resize", calculateVisibleCategories);
 
     return () => {
-      window.removeEventListener('resize', calculateVisibleCategories);
+      window.removeEventListener("resize", calculateVisibleCategories);
     };
   }, [categories]);
 
@@ -44,7 +47,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="container">
         <Link href="/" className="logo">
-          DotStore
+          Favorit116
         </Link>
 
         <div className="nav-categories" ref={navRef}>
@@ -57,10 +60,10 @@ const Navbar = () => {
               {category.name}
             </Link>
           ))}
-          
+
           {overflowCategories.length > 0 && (
             <div className="overflow-menu">
-              <button 
+              <button
                 className="menu-button"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
@@ -97,4 +100,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

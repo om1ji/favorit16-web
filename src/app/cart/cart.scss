@@ -105,7 +105,7 @@
 
       .item-title {
         font-size: 18px;
-        color: #333;
+        color: #fff;
         text-decoration: none;
         margin-bottom: 15px;
         display: block;
@@ -133,7 +133,7 @@
             height: 36px;
             border: none;
             background: #f8f9fa;
-            color: #333;
+            color: #fff;
             font-size: 16px;
             cursor: pointer;
             transition: background 0.3s ease;
@@ -164,7 +164,7 @@
           .price-per-item {
             font-size: 18px;
             font-weight: 600;
-            color: #333;
+            color: #fff;
             display: block;
           }
 
@@ -275,4 +275,4 @@
       }
     }
   }
-} 
+}

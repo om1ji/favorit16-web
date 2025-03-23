@@ -19,7 +19,6 @@ export interface SocialMedia {
 export interface ContactInfo {
   phone: string;
   email: string;
-  address: string;
   workingHours: {
     weekdays: string;
     weekend: string;
@@ -31,8 +30,11 @@ export interface SiteConfig {
     main: NavigationItem[];
     footer: NavigationItem[];
   };
-  social: SocialMedia[];
+  social: {
+    telegram: SocialMedia;
+    whatsapp: SocialMedia;
+  };
   contacts: ContactInfo;
   siteName: string;
   siteDescription: string;
-} 
+}

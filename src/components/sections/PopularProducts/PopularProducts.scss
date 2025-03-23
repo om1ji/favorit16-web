@@ -26,7 +26,9 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
 
     &:hover {
       transform: translateY(-5px);
@@ -61,7 +63,7 @@
 
   .product-title {
     display: block;
-    color: #333;
+    color: #fff;
     text-decoration: none;
     font-size: 16px;
     font-weight: 500;
@@ -84,7 +86,7 @@
     .current-price {
       font-size: 20px;
       font-weight: 600;
-      color: #333;
+      color: #fff;
     }
 
     .old-price {
@@ -130,4 +132,4 @@
       grid-template-columns: 1fr;
     }
   }
-} 
+}

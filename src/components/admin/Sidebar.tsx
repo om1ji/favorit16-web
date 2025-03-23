@@ -1,54 +1,112 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import React, { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   HomeIcon,
   CubeIcon,
-  FolderIcon,
+  TagIcon,
+  UserGroupIcon,
   ShoppingCartIcon,
-  ChartBarIcon,
-  UsersIcon,
-  Cog6ToothIcon
-} from '@heroicons/react/24/outline';
-import './Sidebar.scss';
+  Cog6ToothIcon,
+  ArrowLeftCircleIcon,
+} from "@heroicons/react/24/outline";
+import "./Sidebar.scss";
 
-const menuItems = [
-  { path: '/admin', icon: HomeIcon, label: 'Дашборд' },
-  { path: '/admin/products', icon: CubeIcon, label: 'Товары' },
-  { path: '/admin/categories', icon: FolderIcon, label: 'Категории' },
-  { path: '/admin/orders', icon: ShoppingCartIcon, label: 'Заказы' },
-  { path: '/admin/analytics', icon: ChartBarIcon, label: 'Аналитика' },
-  { path: '/admin/users', icon: UsersIcon, label: 'Пользователи' },
-  { path: '/admin/settings', icon: Cog6ToothIcon, label: 'Настройки' },
-];
-
-const AdminSidebar = () => {
+const Sidebar = () => {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+
+  const isActive = (path: string) => {
+    if (path === "/admin" && pathname === "/admin") {
+      return true;
+    }
+
+    if (path !== "/admin" && pathname.startsWith(path)) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const menuItems = [
+    {
+      path: "/admin",
+      label: "Панель управления",
+      icon: <HomeIcon className="icon" />,
+    },
+    {
+      path: "/admin/products",
+      label: "Товары",
+      icon: <CubeIcon className="icon" />,
+    },
+    {
+      path: "/admin/categories",
+      label: "Категории",
+      icon: <TagIcon className="icon" />,
+    },
+    {
+      path: "/admin/orders",
+      label: "Заказы",
+      icon: <ShoppingCartIcon className="icon" />,
+    },
+    {
+      path: "/admin/users",
+      label: "Пользователи",
+      icon: <UserGroupIcon className="icon" />,
+    },
+    {
+      path: "/admin/settings",
+      label: "Настройки",
+      icon: <Cog6ToothIcon className="icon" />,
+    },
+  ];
 
   return (
-    <aside className="admin-sidebar">
+    <aside className={`admin-sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
-        <Link href="/admin" className="logo">
-          DotStore Admin
-        </Link>
+        <div className="logo">
+          {!collapsed && <span className="logo-text">DotStore Admin</span>}
+        </div>
+        <button
+          className="collapse-button"
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          <ArrowLeftCircleIcon
+            className={`icon ${collapsed ? "rotate" : ""}`}
+          />
+        </button>
       </div>
 
-      <nav className="sidebar-nav">
-        {menuItems.map(({ path, icon: Icon, label }) => (
-          <Link
-            key={path}
-            href={path}
-            className={`nav-item ${pathname === path ? 'active' : ''}`}
-          >
-            <Icon className="w-6 h-6" />
-            <span>{label}</span>
-          </Link>
-        ))}
+      <nav className="sidebar-navigation">
+        <ul>
+          {menuItems.map((item, index) => (
+            <li key={index}>
+              <Link
+                href={item.path}
+                className={`nav-item ${isActive(item.path) ? "active" : ""}`}
+              >
+                {item.icon}
+                {!collapsed && <span className="nav-label">{item.label}</span>}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </nav>
+
+      <div className="sidebar-footer">
+        {!collapsed && (
+          <div className="user-info">
+            <span className="user-name">Административная панель</span>
+            <Link href="/" className="go-to-site">
+              На сайт
+            </Link>
+          </div>
+        )}
+      </div>
     </aside>
   );
 };
 
-export default AdminSidebar; 
+export default Sidebar;

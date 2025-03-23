@@ -1,10 +1,10 @@
-import React from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import './MainSlider.scss';
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "./MainSlider.scss";
 
 const MainSlider = () => {
   return (
@@ -23,7 +23,9 @@ const MainSlider = () => {
             <div className="slider-content">
               <h2>Новая коллекция</h2>
               <p>Скидки до 50% на весь ассортимент</p>
-              <a href="/catalog" className="btn">Перейти в каталог</a>
+              <a href="/catalog" className="btn">
+                Перейти в каталог
+              </a>
             </div>
           </div>
         </SwiperSlide>
@@ -33,7 +35,9 @@ const MainSlider = () => {
             <div className="slider-content">
               <h2>Специальное предложение</h2>
               <p>Бесплатная доставка при заказе от 5000 ₽</p>
-              <a href="/catalog" className="btn">Подробнее</a>
+              <a href="/catalog" className="btn">
+                Подробнее
+              </a>
             </div>
           </div>
         </SwiperSlide>
@@ -42,4 +46,4 @@ const MainSlider = () => {
   );
 };
 
-export default MainSlider; 
+export default MainSlider;

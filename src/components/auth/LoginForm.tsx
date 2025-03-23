@@ -1,11 +1,16 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { login, selectAuthError, selectAuthLoading, selectUser } from '@/redux/features/authSlice';
-import { AppDispatch } from '@/redux/store';
-import Link from 'next/link';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import {
+  login,
+  selectAuthError,
+  selectAuthLoading,
+  selectUser,
+} from "@/redux/features/authSlice";
+import { AppDispatch } from "@/redux/store";
+import Link from "next/link";
 
 const LoginForm = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,41 +20,41 @@ const LoginForm = () => {
   const error = useSelector(selectAuthError);
   const loading = useSelector(selectAuthLoading);
   const user = useSelector(selectUser);
-  
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  
+
   // Получаем параметр redirect из URL
-  const redirectTo = searchParams.get('redirect') || '/';
-  const isAdminRedirect = redirectTo.startsWith('/admin');
+  const redirectTo = searchParams.get("redirect") || "/";
+  const isAdminRedirect = redirectTo.startsWith("/admin");
 
   // Проверяем, авторизован ли пользователь и выполняем перенаправление
   useEffect(() => {
     // Пропускаем перенаправление, если мы находимся на странице логина
     // и пользователь специально пришел сюда (предотвращаем автоматический редирект)
-    const isLoginPage = pathname === '/login';
-    
+    const isLoginPage = pathname === "/login";
+
     // Не выполняем автоматический редирект, если мы уже на странице логина
     if (isLoginPage && !formData.email && !formData.password) {
-      console.log('Staying on login page, no auto-redirect');
+      console.log("Staying on login page, no auto-redirect");
       return;
     }
-    
+
     if (user) {
       // Если нужно перейти в админку, проверяем права
       if (isAdminRedirect) {
         if (user.is_staff) {
-          console.log('Redirecting to admin panel:', redirectTo);
+          console.log("Redirecting to admin panel:", redirectTo);
           router.push(redirectTo);
         } else {
-          console.log('User is not staff, redirecting to home');
-          router.push('/');
+          console.log("User is not staff, redirecting to home");
+          router.push("/");
         }
       } else {
         // Для обычных пользователей
-        console.log('Redirecting to:', redirectTo);
+        console.log("Redirecting to:", redirectTo);
         router.push(redirectTo);
       }
     }
@@ -65,12 +70,12 @@ const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log('Login attempt with:', formData.email);
+      console.log("Login attempt with:", formData.email);
       await dispatch(login(formData)).unwrap();
       // Редирект будет выполнен в useEffect
     } catch (error) {
       // Ошибка уже обработана в slice
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
   };
 
@@ -122,9 +127,7 @@ const LoginForm = () => {
           </div>
 
           {error && (
-            <div className="text-red-500 text-sm text-center">
-              {error}
-            </div>
+            <div className="text-red-500 text-sm text-center">{error}</div>
           )}
 
           <div>
@@ -133,19 +136,25 @@ const LoginForm = () => {
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
-              {loading ? 'Вход...' : 'Войти'}
+              {loading ? "Вход..." : "Войти"}
             </button>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <Link href="/register" className="text-blue-600 hover:text-blue-500">
+              <Link
+                href="/register"
+                className="text-blue-600 hover:text-blue-500"
+              >
                 Зарегистрироваться
               </Link>
             </div>
             {!isAdminRedirect && (
               <div className="text-sm">
-                <Link href="/login?redirect=/admin" className="text-blue-600 hover:text-blue-500">
+                <Link
+                  href="/login?redirect=/admin"
+                  className="text-blue-600 hover:text-blue-500"
+                >
                   Войти как администратор
                 </Link>
               </div>
@@ -157,4 +166,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm; 
+export default LoginForm;

@@ -1,26 +1,29 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
-import { fetchCategories, selectCategories } from '@/redux/features/productsSlice';
+import React, { useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import {
+  fetchCategories,
+  selectCategories,
+} from "@/redux/features/productsSlice";
 
 const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 const Categories = () => {
@@ -58,7 +61,7 @@ const Categories = () => {
         >
           {categories.map((category) => (
             <motion.div key={category.id} variants={item}>
-              <Link href={`/category/${category.id}`} className="block">
+              <Link href={`/catalog/${category.slug}`} className="block">
                 <div className="group relative h-80 bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                   {category.image && (
                     <Image
@@ -92,4 +95,4 @@ const Categories = () => {
   );
 };
 
-export default Categories; 
+export default Categories;

@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { User, getMe } from '@/redux/features/authSlice';
-import { authAPI } from '@/services/api';
-import './ProfileInfo.scss';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { User, getMe } from "@/redux/features/authSlice";
+import { authAPI } from "@/services/api";
+import "./ProfileInfo.scss";
 
 interface ProfileInfoProps {
   user: User | null;
@@ -16,9 +16,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
-    phone: user?.phone || ''
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,8 +33,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
       dispatch(getMe() as any);
     } catch (err: any) {
       setError(
-        err.response?.data?.message || 
-        'Произошла ошибка при обновлении профиля'
+        err.response?.data?.message ||
+          "Произошла ошибка при обновлении профиля",
       );
     } finally {
       setLoading(false);
@@ -43,9 +43,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
 
   const handleCancel = () => {
     setFormData({
-      name: user?.name || '',
-      email: user?.email || '',
-      phone: user?.phone || ''
+      name: user?.name || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
     });
     setError(null);
     setIsEditing(false);
@@ -61,18 +61,14 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
         <h2>Личные данные</h2>
         <button
           className="edit-button"
-          onClick={() => isEditing ? handleCancel() : setIsEditing(true)}
+          onClick={() => (isEditing ? handleCancel() : setIsEditing(true))}
           disabled={loading}
         >
-          {isEditing ? 'Отменить' : 'Редактировать'}
+          {isEditing ? "Отменить" : "Редактировать"}
         </button>
       </div>
 
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
+      {error && <div className="error-message">{error}</div>}
 
       {isEditing ? (
         <form onSubmit={handleSubmit} className="edit-form">
@@ -82,7 +78,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
               type="text"
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               required
               disabled={loading}
               minLength={2}
@@ -96,7 +94,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
               type="email"
               id="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
               disabled={loading}
             />
@@ -108,7 +108,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
               type="tel"
               id="phone"
               value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
               disabled={loading}
               pattern="[0-9+\-\s]+"
               title="Введите корректный номер телефона"
@@ -116,20 +118,16 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
           </div>
 
           <div className="form-actions">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="cancel-button"
               onClick={handleCancel}
               disabled={loading}
             >
               Отменить
             </button>
-            <button 
-              type="submit" 
-              className="save-button"
-              disabled={loading}
-            >
-              {loading ? 'Сохранение...' : 'Сохранить'}
+            <button type="submit" className="save-button" disabled={loading}>
+              {loading ? "Сохранение..." : "Сохранить"}
             </button>
           </div>
         </form>
@@ -155,4 +153,4 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
   );
 };
 
-export default ProfileInfo; 
+export default ProfileInfo;

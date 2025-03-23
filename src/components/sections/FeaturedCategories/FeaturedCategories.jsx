@@ -1,32 +1,32 @@
-import React from 'react';
-import './FeaturedCategories.scss';
+import React from "react";
+import "./FeaturedCategories.scss";
 
 const FeaturedCategories = () => {
   const categories = [
     {
       id: 1,
-      title: 'Смартфоны',
-      image: '/categories/smartphones.jpg',
-      link: '/category/smartphones'
+      title: "Смартфоны",
+      image: "/categories/smartphones.jpg",
+      link: "/category/smartphones",
     },
     {
       id: 2,
-      title: 'Ноутбуки',
-      image: '/categories/laptops.jpg',
-      link: '/category/laptops'
+      title: "Ноутбуки",
+      image: "/categories/laptops.jpg",
+      link: "/category/laptops",
     },
     {
       id: 3,
-      title: 'Планшеты',
-      image: '/categories/tablets.jpg',
-      link: '/category/tablets'
+      title: "Планшеты",
+      image: "/categories/tablets.jpg",
+      link: "/category/tablets",
     },
     {
       id: 4,
-      title: 'Аксессуары',
-      image: '/categories/accessories.jpg',
-      link: '/category/accessories'
-    }
+      title: "Аксессуары",
+      image: "/categories/accessories.jpg",
+      link: "/category/accessories",
+    },
   ];
 
   return (
@@ -48,4 +48,4 @@ const FeaturedCategories = () => {
   );
 };
 
-export default FeaturedCategories; 
+export default FeaturedCategories;

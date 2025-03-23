@@ -1,14 +1,17 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ProductImage } from '@/types/api';
+import React from "react";
+import { ProductImage } from "@/types/api";
 
 interface ProductImageCarouselProps {
   images: ProductImage[];
   productName: string;
 }
 
-const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({ images, productName }) => {
+const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
+  images,
+  productName,
+}) => {
   if (!images.length) {
     return (
       <div className="aspect-square relative overflow-hidden rounded-lg bg-gray-100">
@@ -34,4 +37,4 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({ images, pro
   );
 };
 
-export default ProductImageCarousel; 
+export default ProductImageCarousel;

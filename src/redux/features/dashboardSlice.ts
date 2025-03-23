@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../store';
-import { adminAPI } from '@/services/api';
-import axios from 'axios';
-import { API_URL, API_VERSION } from '@/config/api';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { RootState } from "../store";
+import { adminAPI } from "@/services/api";
+import axios from "axios";
+import { API_URL, API_VERSION } from "@/config/api";
 
 interface TopProduct {
   id: number;
@@ -43,44 +43,44 @@ const initialState: DashboardState = {
 };
 
 export const fetchDashboardData = createAsyncThunk(
-  'dashboard/fetchData',
+  "dashboard/fetchData",
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem("access_token");
       if (!token) {
-        return rejectWithValue('Не авторизован');
+        return rejectWithValue("Не авторизован");
       }
 
       return await adminAPI.getDashboard();
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
-          return rejectWithValue('Необходима авторизация');
+          return rejectWithValue("Необходима авторизация");
         }
         if (error.response?.status === 403) {
-          return rejectWithValue('Нет прав администратора');
+          return rejectWithValue("Нет прав администратора");
         }
         if (error.response?.status === 500) {
-          return rejectWithValue('Ошибка сервера');
+          return rejectWithValue("Ошибка сервера");
         }
         if (error.response?.data?.message) {
           return rejectWithValue(error.response.data.message);
         }
       }
-      return rejectWithValue('Не удалось загрузить данные дашборда');
+      return rejectWithValue("Не удалось загрузить данные дашборда");
     }
-  }
+  },
 );
 
 const dashboardSlice = createSlice({
-  name: 'dashboard',
+  name: "dashboard",
   initialState,
   reducers: {
     clearDashboard: (state) => {
       state.data = null;
       state.error = null;
       state.loading = false;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -95,7 +95,7 @@ const dashboardSlice = createSlice({
       })
       .addCase(fetchDashboardData.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string || 'Произошла ошибка';
+        state.error = (action.payload as string) || "Произошла ошибка";
         state.data = null;
       });
   },
@@ -104,7 +104,8 @@ const dashboardSlice = createSlice({
 export const { clearDashboard } = dashboardSlice.actions;
 
 export const selectDashboardData = (state: RootState) => state.dashboard.data;
-export const selectDashboardLoading = (state: RootState) => state.dashboard.loading;
+export const selectDashboardLoading = (state: RootState) =>
+  state.dashboard.loading;
 export const selectDashboardError = (state: RootState) => state.dashboard.error;
 
-export default dashboardSlice.reducer; 
+export default dashboardSlice.reducer;

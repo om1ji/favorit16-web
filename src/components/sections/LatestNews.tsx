@@ -1,36 +1,39 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
 const news = [
   {
     id: 1,
-    title: 'Новые iPhone 15 уже в продаже',
-    excerpt: 'Встречайте новую линейку смартфонов от Apple с революционными возможностями и улучшенной камерой',
-    image: '/images/news/iphone-15.jpg',
-    date: '2024-03-15',
-    readTime: '5 мин'
+    title: "Новые iPhone 15 уже в продаже",
+    excerpt:
+      "Встречайте новую линейку смартфонов от Apple с революционными возможностями и улучшенной камерой",
+    image: "/images/news/iphone-15.jpg",
+    date: "2024-03-15",
+    readTime: "5 мин",
   },
   {
     id: 2,
-    title: 'Как выбрать идеальный ноутбук',
-    excerpt: 'Подробное руководство по выбору ноутбука для работы, учебы и развлечений от наших экспертов',
-    image: '/images/news/laptop-guide.jpg',
-    date: '2024-03-10',
-    readTime: '8 мин'
+    title: "Как выбрать идеальный ноутбук",
+    excerpt:
+      "Подробное руководство по выбору ноутбука для работы, учебы и развлечений от наших экспертов",
+    image: "/images/news/laptop-guide.jpg",
+    date: "2024-03-10",
+    readTime: "8 мин",
   },
   {
     id: 3,
-    title: 'Тренды в мире гаджетов 2024',
-    excerpt: 'Обзор самых интересных и инновационных технологических новинок этого года',
-    image: '/images/news/tech-trends.jpg',
-    date: '2024-03-05',
-    readTime: '6 мин'
-  }
+    title: "Тренды в мире гаджетов 2024",
+    excerpt:
+      "Обзор самых интересных и инновационных технологических новинок этого года",
+    image: "/images/news/tech-trends.jpg",
+    date: "2024-03-05",
+    readTime: "6 мин",
+  },
 ];
 
 const container = {
@@ -38,14 +41,14 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 const LatestNews = () => {
@@ -90,10 +93,10 @@ const LatestNews = () => {
                   <div className="p-6">
                     <div className="flex items-center text-sm text-gray-500 mb-3">
                       <time dateTime={article.date}>
-                        {new Date(article.date).toLocaleDateString('ru-RU', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric'
+                        {new Date(article.date).toLocaleDateString("ru-RU", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
                         })}
                       </time>
                       <span className="mx-2">·</span>
@@ -120,4 +123,4 @@ const LatestNews = () => {
   );
 };
 
-export default LatestNews; 
+export default LatestNews;

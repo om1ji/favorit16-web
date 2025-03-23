@@ -1,50 +1,54 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
 import {
   fetchDashboardData,
   selectDashboardData,
   selectDashboardLoading,
   selectDashboardError,
-  type DashboardData
-} from '@/redux/features/dashboardSlice';
+  type DashboardData,
+} from "@/redux/features/dashboardSlice";
 import {
   CurrencyDollarIcon,
   ShoppingCartIcon,
   UsersIcon,
   CubeIcon,
-  ExclamationCircleIcon
-} from '@heroicons/react/24/outline';
-import './dashboard.scss';
+  ExclamationCircleIcon,
+} from "@heroicons/react/24/outline";
+import "./dashboard.scss";
 
 const statsCards = [
   {
-    title: 'Общая выручка',
+    title: "Общая выручка",
     icon: CurrencyDollarIcon,
-    value: (data: DashboardData) => `${(data.total_revenue || 0).toLocaleString('ru-RU')} ₽`,
-    color: 'bg-green-500'
+    value: (data: DashboardData) =>
+      `${(data.total_revenue || 0).toLocaleString("ru-RU")} ₽`,
+    color: "bg-green-500",
   },
   {
-    title: 'Всего заказов',
+    title: "Всего заказов",
     icon: ShoppingCartIcon,
-    value: (data: DashboardData) => (data.total_orders || 0).toLocaleString('ru-RU'),
-    color: 'bg-blue-500'
+    value: (data: DashboardData) =>
+      (data.total_orders || 0).toLocaleString("ru-RU"),
+    color: "bg-blue-500",
   },
   {
-    title: 'Продано товаров',
+    title: "Продано товаров",
     icon: CubeIcon,
-    value: (data: DashboardData) => (data.products_sold || 0).toLocaleString('ru-RU'),
-    color: 'bg-purple-500'
+    value: (data: DashboardData) =>
+      (data.products_sold || 0).toLocaleString("ru-RU"),
+    color: "bg-purple-500",
   },
   {
-    title: 'Средний чек',
+    title: "Средний чек",
     icon: CurrencyDollarIcon,
-    value: (data: DashboardData) => `${(data.average_order_value || 0).toLocaleString('ru-RU')} ₽`,
-    color: 'bg-yellow-500'
-  }
+    value: (data: DashboardData) =>
+      `${(data.average_order_value || 0).toLocaleString("ru-RU")} ₽`,
+    color: "bg-yellow-500",
+  },
 ];
 
 const AdminDashboard = () => {
@@ -125,8 +129,10 @@ const AdminDashboard = () => {
                 {dashboardData.top_products.map((product) => (
                   <tr key={product.id}>
                     <td>{product.name}</td>
-                    <td>{(product.total_sales || 0).toLocaleString('ru-RU')}</td>
-                    <td>{(product.revenue || 0).toLocaleString('ru-RU')} ₽</td>
+                    <td>
+                      {(product.total_sales || 0).toLocaleString("ru-RU")}
+                    </td>
+                    <td>{(product.revenue || 0).toLocaleString("ru-RU")} ₽</td>
                   </tr>
                 ))}
               </tbody>
@@ -148,7 +154,7 @@ const AdminDashboard = () => {
                 {dashboardData.revenue_by_category.map((item) => (
                   <tr key={item.category}>
                     <td>{item.category}</td>
-                    <td>{(item.revenue || 0).toLocaleString('ru-RU')} ₽</td>
+                    <td>{(item.revenue || 0).toLocaleString("ru-RU")} ₽</td>
                   </tr>
                 ))}
               </tbody>
@@ -159,12 +165,16 @@ const AdminDashboard = () => {
         <div className="admin-card">
           <h2 className="admin-subtitle">Статусы заказов</h2>
           <div className="orders-status">
-            {Object.entries(dashboardData.orders_by_status || {}).map(([status, count]) => (
-              <div key={status} className="status-item">
-                <span className="status-label">{getStatusLabel(status)}</span>
-                <span className="status-count">{(count || 0).toLocaleString('ru-RU')}</span>
-              </div>
-            ))}
+            {Object.entries(dashboardData.orders_by_status || {}).map(
+              ([status, count]) => (
+                <div key={status} className="status-item">
+                  <span className="status-label">{getStatusLabel(status)}</span>
+                  <span className="status-count">
+                    {(count || 0).toLocaleString("ru-RU")}
+                  </span>
+                </div>
+              ),
+            )}
           </div>
         </div>
       </div>
@@ -175,13 +185,13 @@ const AdminDashboard = () => {
 // Функция для перевода статусов заказов
 const getStatusLabel = (status: string): string => {
   const statusMap: Record<string, string> = {
-    pending: 'Ожидает',
-    processing: 'В обработке',
-    shipped: 'Отправлен',
-    delivered: 'Доставлен',
-    cancelled: 'Отменён'
+    pending: "Ожидает",
+    processing: "В обработке",
+    shipped: "Отправлен",
+    delivered: "Доставлен",
+    cancelled: "Отменён",
   };
   return statusMap[status] || status;
 };
 
-export default AdminDashboard; 
+export default AdminDashboard;

@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { cartAPI } from '@/services/api';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { cartAPI } from "@/services/api";
 
 interface CartItem {
   id: string;
@@ -28,55 +28,69 @@ const initialState: CartState = {
 
 // Async thunks
 export const fetchCart = createAsyncThunk(
-  'cart/fetchCart',
+  "cart/fetchCart",
   async (_, { rejectWithValue }) => {
     try {
       const response = await cartAPI.get();
       return response.items;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Ошибка получения корзины');
+      return rejectWithValue(
+        error.response?.data?.message || "Ошибка получения корзины",
+      );
     }
-  }
+  },
 );
 
 export const addToCart = createAsyncThunk(
-  'cart/addToCart',
-  async (data: { productId: string; quantity: number }, { rejectWithValue }) => {
+  "cart/addToCart",
+  async (
+    data: { productId: string; quantity: number },
+    { rejectWithValue },
+  ) => {
     try {
       const response = await cartAPI.add(data);
       return response.items;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Ошибка добавления в корзину');
+      return rejectWithValue(
+        error.response?.data?.message || "Ошибка добавления в корзину",
+      );
     }
-  }
+  },
 );
 
 export const updateCartItem = createAsyncThunk(
-  'cart/updateCartItem',
-  async ({ itemId, quantity }: { itemId: string; quantity: number }, { rejectWithValue }) => {
+  "cart/updateCartItem",
+  async (
+    { itemId, quantity }: { itemId: string; quantity: number },
+    { rejectWithValue },
+  ) => {
     try {
       const response = await cartAPI.update(itemId, { quantity });
       return response.items;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Ошибка обновления корзины');
+      return rejectWithValue(
+        error.response?.data?.message || "Ошибка обновления корзины",
+      );
     }
-  }
+  },
 );
 
 export const removeFromCart = createAsyncThunk(
-  'cart/removeFromCart',
+  "cart/removeFromCart",
   async (itemId: string, { rejectWithValue }) => {
     try {
       const response = await cartAPI.remove(itemId);
       return response.items;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Ошибка удаления из корзины');
+      return rejectWithValue(
+        error.response?.data?.message || "Ошибка удаления из корзины",
+      );
     }
-  }
+  },
 );
 
 const cartSlice = createSlice({
-  name: 'cart',
+  name: "cart",
   initialState,
   reducers: {
     toggleCart: (state) => {
@@ -154,12 +168,17 @@ export const { toggleCart } = cartSlice.actions;
 
 // Selectors
 export const selectCartItems = (state: { cart: CartState }) => state.cart.items;
-export const selectCartLoading = (state: { cart: CartState }) => state.cart.loading;
+export const selectCartLoading = (state: { cart: CartState }) =>
+  state.cart.loading;
 export const selectCartError = (state: { cart: CartState }) => state.cart.error;
-export const selectIsCartOpen = (state: { cart: CartState }) => state.cart.isOpen;
-export const selectCartCount = (state: { cart: CartState }) => 
+export const selectIsCartOpen = (state: { cart: CartState }) =>
+  state.cart.isOpen;
+export const selectCartCount = (state: { cart: CartState }) =>
   state.cart.items.reduce((total, item) => total + item.quantity, 0);
 export const selectCartTotal = (state: { cart: CartState }) =>
-  state.cart.items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  state.cart.items.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0,
+  );
 
-export default cartSlice.reducer; 
+export default cartSlice.reducer;
