@@ -132,7 +132,7 @@ const Catalog = () => {
                           // TODO: Add to cart functionality
                         }}
                       >
-                        В корзину
+                        Купить
                       </button>
                     ) : (
                       <div className="out-of-stock">Нет в наличии</div>

@@ -63,8 +63,18 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, isEdit = false }
       try {
         const data = await adminAPI.getCategoriesForSelect();
         console.log('Categories from API:', data);
-        // Проверяем, является ли data массивом
-        const categoriesData = Array.isArray(data) ? data : data.results || [];
+        
+        // Определяем, какую структуру данных возвращает API
+        let categoriesData: AdminCategory[] = [];
+        if (Array.isArray(data)) {
+          // Если API возвращает массив напрямую
+          categoriesData = data as AdminCategory[];
+        } else if (data && typeof data === 'object') {
+          // Если API возвращает объект с полем results или другими полями
+          const objData = data as Record<string, any>;
+          categoriesData = (objData.results || objData.categories || objData.data || []) as AdminCategory[];
+        }
+        
         console.log('Processed categories:', categoriesData);
         setCategories(categoriesData);
       } catch (error) {
@@ -113,24 +123,61 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, isEdit = false }
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const data = await adminAPI.uploadImage(file);
         
-        newImages.push({
-          id: data.id,
-          url: data.image,
-          thumbnail: data.thumbnail,
-          alt_text: file.name,
-          is_feature: newImages.length === 0, // Первое изображение будет основным
-        });
+        // Создаем временное превью для улучшения UX
+        const tempId = `temp-${Date.now()}-${i}`;
+        const tempUrl = URL.createObjectURL(file);
+        
+        // Добавляем временное изображение в состояние
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, {
+            id: tempId,
+            file: file,
+            url: tempUrl,
+            alt_text: file.name,
+            is_feature: prev.images.length === 0 && i === 0, // Первое изображение будет основным
+          }]
+        }));
+        
+        // Отправляем на сервер
+        try {
+          const data = await adminAPI.uploadImage(file);
+          
+          // Обновляем изображение в состоянии после успешной загрузки
+          setFormData(prev => ({
+            ...prev,
+            images: prev.images.map(img => 
+              img.id === tempId ? {
+                id: data.id,
+                url: data.image,
+                thumbnail: data.thumbnail,
+                alt_text: file.name,
+                is_feature: img.is_feature
+              } : img
+            )
+          }));
+          
+          // Освобождаем URL объект
+          URL.revokeObjectURL(tempUrl);
+        } catch (error) {
+          console.error(`Error uploading image ${file.name}:`, error);
+          
+          // Помечаем изображение как сбойное, но оставляем в интерфейсе
+          setFormData(prev => ({
+            ...prev,
+            images: prev.images.map(img => 
+              img.id === tempId ? {
+                ...img,
+                alt_text: `Ошибка загрузки: ${file.name}`
+              } : img
+            )
+          }));
+        }
       }
-
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, ...newImages]
-      }));
     } catch (error) {
-      console.error('Error uploading images:', error);
-      setErrors(prev => ({ ...prev, images: 'Failed to upload images' }));
+      console.error('Error handling image upload:', error);
+      setErrors(prev => ({ ...prev, images: 'Ошибка при загрузке изображений' }));
     } finally {
       setLoading(false);
     }
@@ -340,26 +387,44 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, isEdit = false }
           />
           <label htmlFor="images" className="upload-button">
             <PhotoIcon className="w-6 h-6" />
-            <span>Выберите изображения</span>
+            <span>{loading ? 'Загрузка...' : 'Выберите изображения'}</span>
           </label>
         </div>
         {errors.images && <span className="error">{errors.images}</span>}
 
         <div className="image-preview-grid">
           {formData.images.map((image, index) => (
-            <div key={image.id} className="image-preview">
-              <Image
-                src={image.thumbnail || image.url || ''}
-                alt={image.alt_text}
-                width={100}
-                height={100}
-                className="preview-image"
-              />
+            <div key={image.id} className={`image-preview ${image.id.startsWith('temp-') ? 'uploading' : ''}`}>
+              {image.thumbnail || image.url ? (
+                <div className="relative">
+                  {image.id.startsWith('temp-') && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-sm">
+                      Загрузка...
+                    </div>
+                  )}
+                  <Image
+                    src={image.thumbnail || image.url || '/images/placeholder.svg'}
+                    alt={image.alt_text}
+                    width={100}
+                    height={100}
+                    className={`preview-image ${image.id.startsWith('temp-') ? 'opacity-70' : ''}`}
+                    onError={(e) => {
+                      // Если изображение не загружается, заменяем на заглушку
+                      e.currentTarget.src = '/images/placeholder.svg';
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="preview-placeholder">
+                  <PhotoIcon className="w-10 h-10 text-gray-400" />
+                </div>
+              )}
               <div className="image-actions">
                 <button
                   type="button"
                   onClick={() => handleSetFeatureImage(index)}
                   className={`feature-button ${image.is_feature ? 'active' : ''}`}
+                  disabled={image.id.startsWith('temp-')}
                 >
                   {image.is_feature ? 'Основное' : 'Сделать основным'}
                 </button>
@@ -381,6 +446,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, isEdit = false }
                 }}
                 placeholder="Alt текст"
                 className="alt-text-input"
+                disabled={image.id.startsWith('temp-')}
               />
             </div>
           ))}

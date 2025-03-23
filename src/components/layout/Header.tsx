@@ -1,145 +1,129 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-import { 
-  ShoppingBagIcon, 
-  Bars3Icon, 
-  XMarkIcon, 
-  UserIcon,
-  MagnifyingGlassIcon,
-  PhoneIcon,
-  MapPinIcon,
-  InformationCircleIcon
-} from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon, UserIcon } from '@heroicons/react/24/outline';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useSelector, useDispatch } from 'react-redux';
+import { useSiteInfo } from '@/hooks/useConfig';
+import Navigation from './Navigation';
+import SocialLinks from './SocialLinks';
+import ContactInfo from './ContactInfo';
+import { selectUser } from '@/redux/features/authSlice';
+import CategoriesNav from './CategoriesNav';
+import { usePathname } from 'next/navigation';
+import { selectCategories, fetchCategories, selectLoading } from '@/redux/features/productsSlice';
 import { AppDispatch } from '@/redux/store';
-import { selectIsAuthenticated, selectUser, logout } from '@/redux/features/authSlice';
-import { selectCategories } from '@/redux/features/productsSlice';
 
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = React.useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const dispatch = useDispatch<AppDispatch>();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+export default function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { data: siteInfo } = useSiteInfo();
   const user = useSelector(selectUser);
+  const pathname = usePathname();
+  const dispatch = useDispatch<AppDispatch>();
   const categories = useSelector(selectCategories);
+  const categoriesLoading = useSelector(selectLoading);
+  
+  // Определяем, на каких страницах показывать навбар категорий
+  const [showCategoriesNav, setShowCategoriesNav] = useState(true);
+  
+  useEffect(() => {
+    const pagesToShowNav = ['/', '/catalog', '/product'];
+    const shouldShow = pagesToShowNav.some(page => 
+      pathname === page || pathname.startsWith(`${page}/`) || pathname.includes('catalog?')
+    );
+    setShowCategoriesNav(shouldShow);
+  }, [pathname]);
 
-  const handleLogout = async () => {
-    await dispatch(logout());
-    setIsProfileMenuOpen(false);
+  // Загружаем категории при монтировании
+  useEffect(() => {
+    if (categories.length === 0 && !categoriesLoading) {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch, categories.length, categoriesLoading]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
+  // Анимация для мобильного меню
+  const menuVariants = {
+    closed: {
+      opacity: 0,
+      height: 0,
+      transition: {
+        duration: 0.3,
+        staggerChildren: 0.05,
+        staggerDirection: -1,
+      },
+    },
+    open: {
+      opacity: 1,
+      height: 'auto',
+      transition: {
+        duration: 0.3,
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement search functionality
-    console.log('Search:', searchQuery);
-  };
+  // Определяем URL для админ-ссылки
+  const adminUrl = user?.is_staff ? '/admin' : '/login?redirect=/admin';
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-primary shadow-md z-50">
-      {/* Top Level */}
-      <div className="border-b border-primary-lighter">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+    <>
+      <header 
+        className={`fixed w-full z-50 transition-all duration-300 ${
+          scrolled ? 'bg-white shadow-md py-2' : 'bg-white/90 py-4'
+        }`}
+      >
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center">
             {/* Logo */}
-            <div className="flex-shrink-0">
-              <Link href="/" className="text-2xl font-bold text-white">
-                DotStore
-              </Link>
+            <Link href="/" className="flex items-center">
+              <span className="font-bold text-2xl text-gray-900">
+                {siteInfo?.siteName || 'DotStore'}
+              </span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center">
+              <Navigation type="main" className="flex space-x-8" />
+              
+              <div className="ml-8 flex items-center space-x-4">
+                <SocialLinks />
+                <Link
+                  href={adminUrl}
+                  className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  <UserIcon className="h-5 w-5 mr-1" />
+                  <span>Админ</span>
+                </Link>
+              </div>
             </div>
 
-            {/* Search Bar */}
-            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-lg mx-8">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 rounded-lg bg-primary-lighter text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent"
-                  placeholder="Поиск товаров..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button
-                  type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-                >
-                  <MagnifyingGlassIcon className="h-5 w-5" />
-                </button>
-              </div>
-            </form>
-
-            {/* Right Side Icons */}
-            <div className="flex items-center space-x-4">
-              <Link href="/cart" className="p-2 text-white hover:text-primary-lighter relative">
-                <ShoppingBagIcon className="h-6 w-6" />
-                {/* Add cart items count badge here if needed */}
-              </Link>
-
-              {/* Auth buttons or profile menu */}
-              {isAuthenticated ? (
-                <div className="relative">
-                  <button
-                    type="button"
-                    className="flex items-center space-x-2 text-white hover:text-primary-lighter"
-                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                  >
-                    <UserIcon className="h-6 w-6" />
-                    <span className="hidden md:block">{user?.first_name}</span>
-                  </button>
-
-                  {/* Profile dropdown */}
-                  {isProfileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                      <div className="py-1">
-                        <Link
-                          href="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                        >
-                          Профиль
-                        </Link>
-                        <Link
-                          href="/orders"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                        >
-                          Заказы
-                        </Link>
-                        <button
-                          onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-secondary"
-                        >
-                          Выйти
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="hidden md:flex items-center space-x-4">
-                  <Link
-                    href="/login"
-                    className="text-white hover:text-primary-lighter"
-                  >
-                    Войти
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="bg-accent text-white px-4 py-2 rounded-md hover:bg-accent/90"
-                  >
-                    Регистрация
-                  </Link>
-                </div>
-              )}
-
-              {/* Mobile menu button */}
+            {/* Mobile menu button */}
+            <div className="md:hidden">
               <button
                 type="button"
-                className="md:hidden p-2 rounded-md text-white hover:text-primary-lighter"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 inline-flex items-center justify-center text-gray-500 hover:text-gray-900 focus:outline-none"
+                onClick={toggleMenu}
+                aria-label={isOpen ? 'Закрыть меню' : 'Открыть меню'}
               >
-                {isMenuOpen ? (
+                {isOpen ? (
                   <XMarkIcon className="h-6 w-6" />
                 ) : (
                   <Bars3Icon className="h-6 w-6" />
@@ -148,120 +132,75 @@ const Header = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Bottom Level - Categories and Additional Links */}
-      <div className="bg-primary-darker">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="hidden md:flex items-center justify-between h-12">
-            {/* Categories */}
-            <nav className="flex space-x-6">
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/category/${category.id}`}
-                  className="text-white hover:text-primary-lighter text-sm font-medium"
-                >
-                  {category.name}
-                </Link>
-              ))}
-            </nav>
-
-            {/* Additional Links */}
-            <div className="flex items-center space-x-6">
-              <Link href="/about" className="flex items-center text-white hover:text-primary-lighter text-sm">
-                <InformationCircleIcon className="h-5 w-5 mr-1" />
-                <span>О компании</span>
-              </Link>
-              <Link href="/contacts" className="flex items-center text-white hover:text-primary-lighter text-sm">
-                <PhoneIcon className="h-5 w-5 mr-1" />
-                <span>Контакты</span>
-              </Link>
-              <Link href="/address" className="flex items-center text-white hover:text-primary-lighter text-sm">
-                <MapPinIcon className="h-5 w-5 mr-1" />
-                <span>Адрес</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-primary-darker">
-          {/* Mobile Search */}
-          <div className="p-4">
-            <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
-                className="w-full px-4 py-2 rounded-lg bg-primary-lighter text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent"
-                placeholder="Поиск товаров..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-              >
-                <MagnifyingGlassIcon className="h-5 w-5" />
-              </button>
-            </form>
-          </div>
-
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            {/* Categories */}
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/category/${category.id}`}
-                className="block px-3 py-2 rounded-md text-white hover:text-primary-lighter hover:bg-primary"
-              >
-                {category.name}
-              </Link>
-            ))}
-
-            {/* Additional Links */}
-            <Link
-              href="/about"
-              className="block px-3 py-2 rounded-md text-white hover:text-primary-lighter hover:bg-primary"
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={menuVariants}
+              className="md:hidden overflow-hidden"
             >
-              О компании
-            </Link>
-            <Link
-              href="/contacts"
-              className="block px-3 py-2 rounded-md text-white hover:text-primary-lighter hover:bg-primary"
-            >
-              Контакты
-            </Link>
-            <Link
-              href="/address"
-              className="block px-3 py-2 rounded-md text-white hover:text-primary-lighter hover:bg-primary"
-            >
-              Адрес
-            </Link>
-
-            {/* Mobile Auth Links */}
-            {!isAuthenticated && (
-              <>
-                <Link
-                  href="/login"
-                  className="block px-3 py-2 rounded-md text-white hover:text-primary-lighter hover:bg-primary"
-                >
-                  Войти
-                </Link>
-                <Link
-                  href="/register"
-                  className="block px-3 py-2 rounded-md text-white hover:text-primary-lighter hover:bg-primary"
-                >
-                  Регистрация
-                </Link>
-              </>
-            )}
-          </div>
+              <div className="px-4 py-3 bg-gray-50 border-t border-b border-gray-200">
+                <Navigation type="main" className="flex flex-col space-y-3" vertical />
+                
+                {/* Мобильные категории */}
+                {showCategoriesNav && (
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <h3 className="text-sm font-medium text-gray-900">Категории</h3>
+                    <div className="mt-3 flex flex-col space-y-2">
+                      <Link 
+                        href="/catalog"
+                        className="text-gray-600 hover:text-gray-900"
+                      >
+                        Все категории
+                      </Link>
+                      {categories.map(category => (
+                        <Link 
+                          key={category.id}
+                          href={`/catalog?category=${category.id}`}
+                          className="text-gray-600 hover:text-gray-900"
+                        >
+                          {category.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h3 className="text-sm font-medium text-gray-900">Контакты</h3>
+                  <ContactInfo variant="compact" className="mt-3" />
+                </div>
+                
+                <div className="mt-6">
+                  <h3 className="text-sm font-medium text-gray-900">Мы в соцсетях</h3>
+                  <SocialLinks className="mt-3 flex space-x-4" />
+                </div>
+                
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <Link
+                    href={adminUrl}
+                    className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+                  >
+                    <UserIcon className="h-5 w-5 mr-1" />
+                    <span>Войти в админ-панель</span>
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+      
+      {/* Навигационная панель категорий - только для десктопа */}
+      {showCategoriesNav && (
+        <div className="w-full fixed top-[72px] z-40 hidden md:block">
+          <CategoriesNav />
         </div>
       )}
-    </header>
+    </>
   );
-};
-
-export default Header; 
+} 

@@ -234,4 +234,39 @@
       font-size: 16px;
     }
   }
+}
+
+.loading, .loading-filters {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  color: #666;
+  font-size: 16px;
+  
+  &::after {
+    content: "";
+    display: inline-block;
+    margin-left: 10px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #4B8D5F;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+}
+
+.loading-filters {
+  min-height: 100px;
+  background-color: transparent;
+  margin-top: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 } 

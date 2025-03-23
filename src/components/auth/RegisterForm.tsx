@@ -15,6 +15,7 @@ const RegisterForm = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    password2: '',
     first_name: '',
     last_name: '',
     phone: '',
@@ -118,6 +119,21 @@ const RegisterForm = () => {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Пароль"
                 value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="password2" className="sr-only">
+                Подтверждение пароля
+              </label>
+              <input
+                id="password2"
+                name="password2"
+                type="password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Подтверждение пароля"
+                value={formData.password2}
                 onChange={handleChange}
               />
             </div>

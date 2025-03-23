@@ -35,7 +35,12 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // If error is 401 and we haven't tried to refresh token yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 && 
+      !originalRequest._retry && 
+      !originalRequest.url?.includes('/auth/token/refresh/') &&
+      !originalRequest.url?.includes('/users/refresh/')
+    ) {
       originalRequest._retry = true;
 
       try {
@@ -44,21 +49,53 @@ api.interceptors.response.use(
         if (!refreshToken) {
           throw new Error('No refresh token');
         }
+        
+        console.log('Admin API: Attempting to refresh token with:', refreshToken);
+        
+        // Try standard JWT refresh endpoint first
+        try {
+          const response = await axios.post(
+            `${API_URL}/api/${API_VERSION}/auth/token/refresh/`, 
+            { refresh: refreshToken },
+            { headers: { 'Content-Type': 'application/json' } }
+          );
+          
+          console.log('Admin API: Token refresh successful via auth/token');
+          const { access } = response.data;
+          localStorage.setItem('access_token', access);
 
-        const response = await axios.post(`${API_URL}/api/${API_VERSION}/auth/token/refresh/`, {
-          refresh: refreshToken
-        });
+          // Retry original request with new token
+          originalRequest.headers.Authorization = `Bearer ${access}`;
+          return api(originalRequest);
+        } catch (authRefreshError) {
+          console.log('Admin API: Auth refresh failed, trying users/refresh endpoint');
+          
+          // If that fails, try the custom endpoint
+          const response = await axios.post(
+            `${API_URL}/api/${API_VERSION}/users/refresh/`, 
+            { refresh: refreshToken },
+            { headers: { 'Content-Type': 'application/json' } }
+          );
+          
+          console.log('Admin API: Token refresh successful via users/refresh');
+          const { access } = response.data;
+          localStorage.setItem('access_token', access);
 
-        const { access } = response.data;
-        localStorage.setItem('access_token', access);
-
-        // Retry original request with new token
-        originalRequest.headers.Authorization = `Bearer ${access}`;
-        return api(originalRequest);
+          // Retry original request with new token
+          originalRequest.headers.Authorization = `Bearer ${access}`;
+          return api(originalRequest);
+        }
       } catch (refreshError) {
         // If refresh failed, clear tokens and reject
+        console.error('Admin API: Failed to refresh token:', refreshError);
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        
+        // Redirect only if we're on the client side and not in server rendering
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
+        
         return Promise.reject(refreshError);
       }
     }

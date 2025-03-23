@@ -136,7 +136,7 @@ export default function CategoryPage({ params }: Props) {
                         // TODO: Add to cart functionality
                       }}
                     >
-                      В корзину
+                      Купить
                     </button>
                   )}
                 </div>

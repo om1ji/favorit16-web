@@ -2,91 +2,87 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { FaInstagram, FaTelegram, FaWhatsapp } from 'react-icons/fa';
+import { useSiteInfo } from '@/hooks/useConfig';
+import Navigation from './Navigation';
+import SocialLinks from './SocialLinks';
+import ContactInfo from './ContactInfo';
 
-const Footer = () => {
+export default function Footer() {
+  const { data: siteInfo } = useSiteInfo();
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="text-primary">
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Company Info */}
+    <footer className="bg-gray-900 text-white pt-12 pb-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {/* Column 1: Logo and about */}
           <div>
-            <h3 className="text-xl text-text-lighter font-bold mb-4">DotStore</h3>
-            <p className="text-text-lighter">
-              Ваш надежный магазин электроники и аксессуаров
+            <Link href="/" className="flex items-center">
+              <span className="font-bold text-2xl text-white mb-4">
+                {siteInfo?.siteName || 'DotStore'}
+              </span>
+            </Link>
+            <p className="text-gray-400 mt-4 mb-6">
+              {siteInfo?.siteDescription || 
+                'Ваш надежный магазин электроники и аксессуаров. Мы предлагаем только качественные товары по доступным ценам.'}
             </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-lg text-text-lighter font-semibold mb-4">Быстрые ссылки</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/catalog" className="text-text-lighter hover:text-white">
-                  Каталог
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-text-lighter hover:text-white">
-                  О нас
-                </Link>
-              </li>
-              <li>
-                <Link href="/delivery" className="text-text-lighter hover:text-white">
-                  Доставка
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg text-text-lighter font-semibold mb-4">Контакты</h3>
-            <ul className="space-y-2 text-text-lighter">
-              <li>Телефон: +7 (987) 189-07-52</li>
-              <li>Email: info@favorit-16.ru</li>
-              {/* <li>Адрес: г. Казань, ул. Примерная, 123</li> */}
-            </ul>
-          </div>
-
-          {/* Social Media */}
-          <div>
-            <h3 className="text-lg text-text-lighter font-semibold mb-4">Мы в соцсетях</h3>
-            <div className="flex space-x-4">
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-text-lighter hover:text-white"
-              >
-                <FaInstagram className="h-6 w-6" />
-              </a>
-              <a
-                href="https://telegram.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-text-lighter hover:text-white"
-              >
-                <FaTelegram className="h-6 w-6" />
-              </a>
-              <a
-                href="https://whatsapp.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-text-lighter hover:text-white"
-              >
-                <FaWhatsapp className="h-6 w-6" />
-              </a>
+            <div className="mb-6">
+              <SocialLinks className="flex space-x-3" />
             </div>
+          </div>
+
+          {/* Column 2: Navigation */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4 text-white">Навигация</h3>
+            <Navigation 
+              type="footer" 
+              className="flex flex-col space-y-2 text-gray-400" 
+              vertical 
+              showIcons={false}
+            />
+          </div>
+
+          {/* Column 3: Contact info */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4 text-white">Контакты</h3>
+            <ContactInfo variant="footer" />
+          </div>
+
+          {/* Column 4: Newsletter (optional) */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4 text-white">Подписка на новости</h3>
+            <p className="text-gray-400 mb-4">
+              Подпишитесь на нашу рассылку, чтобы получать информацию о новинках и акциях
+            </p>
+            <form className="flex flex-col sm:flex-row">
+              <input
+                type="email"
+                placeholder="Ваш email"
+                className="px-4 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 sm:mb-0 sm:mr-2"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+              >
+                Подписаться
+              </button>
+            </form>
           </div>
         </div>
 
-        <div className="border-t border-primary-darker mt-8 pt-8 text-center text-text-lighter">
-          <p>&copy; {new Date().getFullYear()} DotStore. Все права защищены.</p>
+        {/* Bottom section with copyright */}
+        <div className="mt-12 pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
+          <p>© {currentYear} {siteInfo?.siteName || 'DotStore'}. Все права защищены.</p>
+          <div className="mt-4 md:mt-0 flex space-x-6">
+            <Link href="/privacy" className="hover:text-white transition">
+              Политика конфиденциальности
+            </Link>
+            <Link href="/terms" className="hover:text-white transition">
+              Условия использования
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer; 
+} 

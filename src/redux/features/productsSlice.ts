@@ -1,7 +1,9 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { Category, Product, ProductFilters, Brand } from '@/types/api';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { Product, Category, Brand, ProductFilters, CategoryListResponse, BrandListResponse } from '@/types/api';
 import { getCategories, getProducts, getProduct, getBrands } from '@/lib/api';
 import { RootState } from '../store';
+import { AxiosError } from 'axios';
+import api from '@/lib/api';
 
 interface ProductsState {
   categories: Category[];
@@ -12,6 +14,7 @@ interface ProductsState {
   error: string | null;
   totalProducts: number;
   currentPage: number;
+  currentFilters: ProductFilters | null;
 }
 
 const initialState: ProductsState = {
@@ -23,32 +26,119 @@ const initialState: ProductsState = {
   error: null,
   totalProducts: 0,
   currentPage: 1,
+  currentFilters: null,
 };
 
 export const fetchCategories = createAsyncThunk(
   'products/fetchCategories',
-  async () => {
-    const response = await getCategories();
-    return response.results;
+  async (_, { rejectWithValue, getState }) => {
+    const state = getState() as RootState;
+    
+    // Если категории уже загружены, возвращаем их
+    if (state.products.categories.length > 0 && !state.products.loading) {
+      console.log('Using cached categories');
+      return state.products.categories;
+    }
+    
+    try {
+      const response = await api.get('/api/v1/products/categories/');
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data?.message || 'Произошла ошибка при загрузке категорий');
+      }
+      return rejectWithValue('Произошла ошибка при загрузке категорий');
+    }
   }
 );
 
 export const fetchBrands = createAsyncThunk(
   'products/fetchBrands',
-  async () => {
-    const response = await getBrands();
-    return response.results;
+  async (_, { rejectWithValue, getState }) => {
+    const state = getState() as RootState;
+    
+    // Если бренды уже загружены, возвращаем их
+    if (state.products.brands.length > 0 && !state.products.loading) {
+      console.log('Using cached brands');
+      return state.products.brands;
+    }
+    
+    try {
+      const response = await api.get('/api/v1/products/brands/');
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data?.message || 'Произошла ошибка при загрузке брендов');
+      }
+      return rejectWithValue('Произошла ошибка при загрузке брендов');
+    }
   }
 );
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async (filters: ProductFilters) => {
-    const response = await getProducts(filters);
-    return {
-      products: response.results,
-      total: response.count,
-    };
+  async (filters: ProductFilters, { rejectWithValue, getState }) => {
+    const state = getState() as RootState;
+    // Проверяем, не идентичен ли текущий запрос предыдущему
+    const currentFilters = state.products.currentFilters;
+    const currentPage = state.products.currentPage;
+    
+    // Если фильтры и страница не изменились, не делаем запрос
+    if (
+      currentPage === filters.page &&
+      JSON.stringify(currentFilters) === JSON.stringify(filters) &&
+      state.products.products.length > 0
+    ) {
+      console.log('Skipping duplicate product fetch request');
+      return {
+        results: state.products.products,
+        count: state.products.totalProducts
+      };
+    }
+
+    try {
+      const queryParams = new URLSearchParams();
+      
+      if (filters.category) {
+        queryParams.append('category', filters.category);
+      }
+      
+      if (filters.brand) {
+        queryParams.append('brand', filters.brand);
+      }
+      
+      if (filters.ordering) {
+        queryParams.append('ordering', filters.ordering);
+      }
+      
+      if (filters.search) {
+        queryParams.append('search', filters.search);
+      }
+      
+      if (filters.page) {
+        queryParams.append('page', filters.page.toString());
+      }
+      
+      if (filters.width) {
+        queryParams.append('width', filters.width.toString());
+      }
+      
+      if (filters.profile) {
+        queryParams.append('profile', filters.profile.toString());
+      }
+      
+      if (filters.diameter) {
+        queryParams.append('diameter', filters.diameter.toString());
+      }
+      
+      const response = await api.get(`/api/v1/products/?${queryParams.toString()}`);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data?.message || 'Произошла ошибка при загрузке товаров');
+      }
+      return rejectWithValue('Произошла ошибка при загрузке товаров');
+    }
   }
 );
 
@@ -64,11 +154,14 @@ const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    setCurrentPage: (state, action) => {
+    setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
     },
     clearSelectedProduct: (state) => {
       state.selectedProduct = null;
+    },
+    setCurrentFilters: (state, action: PayloadAction<ProductFilters>) => {
+      state.currentFilters = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -80,7 +173,12 @@ const productsSlice = createSlice({
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.loading = false;
-        state.categories = action.payload;
+        // Проверяем структуру данных и сохраняем соответствующим образом
+        if (action.payload.results) {
+          state.categories = action.payload.results;
+        } else {
+          state.categories = action.payload;
+        }
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.loading = false;
@@ -95,7 +193,12 @@ const productsSlice = createSlice({
       })
       .addCase(fetchBrands.fulfilled, (state, action) => {
         state.loading = false;
-        state.brands = action.payload;
+        // Проверяем структуру данных и сохраняем соответствующим образом
+        if (action.payload.results) {
+          state.brands = action.payload.results;
+        } else {
+          state.brands = action.payload;
+        }
       })
       .addCase(fetchBrands.rejected, (state, action) => {
         state.loading = false;
@@ -109,9 +212,21 @@ const productsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
+        // Проверяем структуру данных
+        if (action.payload.results) {
+          state.products = action.payload.results;
+          state.totalProducts = action.payload.count;
+        } else {
+          state.products = action.payload;
+          // Если count отсутствует, используем длину массива продуктов
+          state.totalProducts = action.payload.count || action.payload.length;
+        }
         state.loading = false;
-        state.products = action.payload.products;
-        state.totalProducts = action.payload.total;
+        state.error = null;
+        // Сохраняем текущие фильтры для будущих сравнений
+        if (action.meta.arg) {
+          state.currentFilters = action.meta.arg;
+        }
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
@@ -135,7 +250,11 @@ const productsSlice = createSlice({
   },
 });
 
-export const { setCurrentPage, clearSelectedProduct } = productsSlice.actions;
+export const { 
+  setCurrentPage, 
+  clearSelectedProduct,
+  setCurrentFilters 
+} = productsSlice.actions;
 
 // Селекторы
 export const selectCategories = (state: RootState) => state.products.categories;

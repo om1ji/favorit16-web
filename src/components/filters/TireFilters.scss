@@ -13,6 +13,33 @@
     color: #333;
   }
   
+  .loading-filters {
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    font-size: 14px;
+    
+    &::after {
+      content: "";
+      display: inline-block;
+      margin-left: 8px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #4B8D5F;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
   .filter-group {
     margin-bottom: 12px;
     
@@ -36,6 +63,12 @@
       &:focus {
         outline: none;
         border-color: #4B8D5F;
+      }
+      
+      &:disabled {
+        background-color: #f0f0f0;
+        color: #999;
+        cursor: not-allowed;
       }
     }
   }

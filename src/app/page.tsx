@@ -13,7 +13,7 @@ export default function Home() {
       <Features />
       <Categories />
       <PopularProducts />
-      <LatestNews />
+      {/* <LatestNews /> */}
       <Newsletter />
     </>
   );
