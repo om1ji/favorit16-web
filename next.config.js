@@ -8,6 +8,11 @@ const nextConfig = {
         port: "8000",
         pathname: "/media/**",
       },
+      {
+        protocol: "https",
+        hostname: "api.favorit-116.ru",
+        pathname: "/media/**",
+      },
     ],
   },
   async rewrites() {
