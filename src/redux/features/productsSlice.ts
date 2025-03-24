@@ -48,7 +48,7 @@ export const fetchCategories = createAsyncThunk(
     }
 
     try {
-      const response = await api.get("/api/v1/products/categories/");
+      const response = await api.get("/products/categories/");
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -74,7 +74,7 @@ export const fetchBrands = createAsyncThunk(
     }
 
     try {
-      const response = await api.get("/api/v1/products/brands/");
+      const response = await api.get("/products/brands/");
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -185,7 +185,7 @@ export const fetchProducts = createAsyncThunk(
       }
 
       const response = await api.get(
-        `/api/v1/products/?${queryParams.toString()}`,
+        `/products/?${queryParams.toString()}`,
       );
       return response.data;
     } catch (error) {
@@ -204,7 +204,7 @@ export const fetchProductById = createAsyncThunk(
   "products/fetchProductById",
   async (idOrSlug: string) => {
     try {
-      const response = await api.get(`/api/v1/products/${idOrSlug}/`);
+      const response = await api.get(`/products/${idOrSlug}/`);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {

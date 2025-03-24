@@ -76,7 +76,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
                 console.log("Manual token refresh attempt");
 
                 const response = await fetch(
-                  `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/v1/auth/token/refresh/`,
+                  `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/token/refresh/`,
                   {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

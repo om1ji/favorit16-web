@@ -38,7 +38,7 @@ const createCacheKey = (filters?: ProductFilters): string => {
 };
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
   headers: {
     "Content-Type": "application/json",
   },
@@ -90,7 +90,7 @@ api.interceptors.response.use(
           // Попробуем сначала через auth/token/refresh/ (стандартный JWT-путь)
           try {
             const response = await axios.post(
-              `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/v1/auth/token/refresh/`,
+              `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/token/refresh/`,
               { refresh: refreshToken },
               { headers: { "Content-Type": "application/json" } },
             );
@@ -108,7 +108,7 @@ api.interceptors.response.use(
 
             // Если первый путь не сработал, попробуем через /users/refresh/
             const response = await axios.post(
-              `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/v1/users/refresh/`,
+              `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/users/refresh/`,
               { refresh: refreshToken },
               { headers: { "Content-Type": "application/json" } },
             );
@@ -158,7 +158,7 @@ api.interceptors.response.use(
 // Auth API
 export const login = async (credentials: LoginCredentials) => {
   const response = await api.post<AuthResponse>(
-    "/api/v1/users/login/",
+    "//users/login/",
     credentials,
   );
   return response.data;
@@ -166,19 +166,19 @@ export const login = async (credentials: LoginCredentials) => {
 
 export const register = async (data: RegisterData) => {
   const response = await api.post<AuthResponse>(
-    "/api/v1/users/register/",
+    "//users/register/",
     data,
   );
   return response.data;
 };
 
 export const logout = async () => {
-  const response = await api.post("/api/v1/users/logout/");
+  const response = await api.post("//users/logout/");
   return response.data;
 };
 
 export const getMe = async () => {
-  const response = await api.get<User>("/api/v1/users/me/");
+  const response = await api.get<User>("//users/me/");
   return response.data;
 };
 
@@ -191,7 +191,7 @@ export const getCategories = async () => {
   }
 
   const response = await api.get<CategoryListResponse>(
-    "/api/v1/products/categories/",
+    "/products/categories/",
   );
   // Сохраняем в кеш
   cache.categories = response.data;
@@ -205,7 +205,7 @@ export const getBrands = async () => {
     return cache.brands;
   }
 
-  const response = await api.get<BrandListResponse>("/api/v1/products/brands/");
+  const response = await api.get<BrandListResponse>("/products/brands/");
   // Сохраняем в кеш
   cache.brands = response.data;
   return response.data;
@@ -220,7 +220,7 @@ export const getProducts = async (filters?: ProductFilters) => {
     return cache.products[cacheKey];
   }
 
-  const response = await api.get<ProductListResponse>("/api/v1/products/", {
+  const response = await api.get<ProductListResponse>("/products/", {
     params: filters,
   });
 
@@ -238,7 +238,7 @@ export const getProduct = async (id: string) => {
     return cache.productDetails[id];
   }
 
-  const response = await api.get<Product>(`/api/v1/products/${id}/`);
+  const response = await api.get<Product>(`/products/${id}/`);
 
   // Сохраняем в кеш
   if (!cache.productDetails) cache.productDetails = {};

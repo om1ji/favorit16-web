@@ -64,7 +64,7 @@ const useCategoryBrands = (categoryIdOrSlug?: string) => {
 
         // Получаем продукты для данной категории, используя id
         const response = await api.get(
-          `/api/v1/products/?category=${categoryId}&limit=100`,
+          `/products/?category=${categoryId}&limit=100`,
         );
 
         if (response.data && response.data.results) {
