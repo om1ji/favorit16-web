@@ -30,6 +30,14 @@ export default function Header() {
   const categories = useSelector(selectCategories);
   const categoriesLoading = useSelector(selectLoading);
 
+  // Check if we're in the admin panel
+  const isAdminPanel = pathname.startsWith('/admin');
+  
+  // If in admin panel, don't render the header
+  if (isAdminPanel) {
+    return null;
+  }
+
   // Определяем, на каких страницах показывать навбар категорий
   const [showCategoriesNav, setShowCategoriesNav] = useState(true);
 

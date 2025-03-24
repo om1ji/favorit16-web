@@ -45,29 +45,14 @@ const Sidebar = () => {
       path: "/admin/categories",
       label: "Категории",
       icon: <TagIcon className="icon" />,
-    },
-    {
-      path: "/admin/orders",
-      label: "Заказы",
-      icon: <ShoppingCartIcon className="icon" />,
-    },
-    {
-      path: "/admin/users",
-      label: "Пользователи",
-      icon: <UserGroupIcon className="icon" />,
-    },
-    {
-      path: "/admin/settings",
-      label: "Настройки",
-      icon: <Cog6ToothIcon className="icon" />,
-    },
+    }
   ];
 
   return (
     <aside className={`admin-sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
         <div className="logo">
-          {!collapsed && <span className="logo-text">DotStore Admin</span>}
+          {!collapsed && <span className="logo-text">Favorit116 Admin</span>}
         </div>
         <button
           className="collapse-button"

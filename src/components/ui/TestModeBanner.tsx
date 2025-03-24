@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import "./TestModeBanner.scss";
 
 interface TestModeBannerProps {
@@ -11,6 +12,15 @@ const TestModeBanner: React.FC<TestModeBannerProps> = ({
   text = "Сайт работает в тестовом режиме! Заказы принимаются только по телефону или в Telegram.",
 }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  
+  // Check if we're in the admin panel
+  const isAdminPanel = pathname.startsWith('/admin');
+  
+  // If in admin panel, don't render the banner
+  if (isAdminPanel) {
+    return null;
+  }
 
   useEffect(() => {
     const banner = bannerRef.current;

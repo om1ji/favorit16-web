@@ -53,91 +53,91 @@ const CategoriesNav = () => {
       setActiveCategory(categoryId);
       setShowBrands(!!categoryId);
     }, 300);
-
-    useEffect(() => {
-      return () => {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-      };
-    }, []);
-
-    return (
-      <div className="categories-nav">
-        <div className="categories-list">
-          {loading ? (
-            <div className="loading-categories">Загрузка категорий...</div>
-          ) : (
-            <>
-              <div
-                className={`category-item ${!currentCategorySlug ? "active" : ""}`}
-                onMouseEnter={() => handleCategoryHover(null)}
-              >
-                <Link href="/catalog" className="category-link">
-                  Каталог
-                </Link>
-              </div>
-
-              {categories.map((category) => (
-                <div
-                  key={category.id}
-                  className={`category-item ${currentCategorySlug === category.slug ? "active" : ""}`}
-                  onMouseEnter={() => handleCategoryHover(category.id)}
-                  onMouseLeave={() => setShowBrands(false)}
-                >
-                  <Link
-                    href={`/catalog/${category.slug}`}
-                    className="category-link"
-                  >
-                    {category.name}
-                  </Link>
-
-                  {/* Выпадающий список брендов */}
-                  {showBrands && activeCategory === category.id && (
-                    <div className="brands-dropdown">
-                      <h4>Бренды в категории {category.name}</h4>
-                      <div className="brands-list">
-                        {brandsLoading ? (
-                          <div className="loading-brands">
-                            Загрузка брендов...
-                          </div>
-                        ) : categoryBrands.length > 0 ? (
-                          categoryBrands.map((brand) => (
-                            <Link
-                              key={brand.id}
-                              href={`/catalog/${category.slug}?brand=${brand.id}`}
-                              className="brand-link"
-                            >
-                              {brand.logo ? (
-                                <span className="brand-logo">
-                                  <img
-                                    src={brand.logo}
-                                    alt={brand.name}
-                                    width={20}
-                                    height={20}
-                                  />
-                                </span>
-                              ) : null}
-                              <span>{brand.name}</span>
-                              <span className="product-count">
-                                ({brand.productCount})
-                              </span>
-                            </Link>
-                          ))
-                        ) : (
-                          <div className="no-brands">Нет доступных брендов</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </>
-          )}
-        </div>
-      </div>
-    );
   };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div className="categories-nav">
+      <div className="categories-list">
+        {loading ? (
+          <div className="loading-categories">Загрузка категорий...</div>
+        ) : (
+          <>
+            <div
+              className={`category-item ${!currentCategorySlug ? "active" : ""}`}
+              onMouseEnter={() => handleCategoryHover(null)}
+            >
+              <Link href="/catalog" className="category-link">
+                Каталог
+              </Link>
+            </div>
+
+            {categories.map((category) => (
+              <div
+                key={category.id}
+                className={`category-item ${currentCategorySlug === category.slug ? "active" : ""}`}
+                onMouseEnter={() => handleCategoryHover(category.id)}
+                onMouseLeave={() => setShowBrands(false)}
+              >
+                <Link
+                  href={`/catalog/${category.slug}`}
+                  className="category-link"
+                >
+                  {category.name}
+                </Link>
+
+                {/* Выпадающий список брендов */}
+                {showBrands && activeCategory === category.id && (
+                  <div className="brands-dropdown">
+                    <h4>Бренды в категории {category.name}</h4>
+                    <div className="brands-list">
+                      {brandsLoading ? (
+                        <div className="loading-brands">
+                          Загрузка брендов...
+                        </div>
+                      ) : categoryBrands.length > 0 ? (
+                        categoryBrands.map((brand) => (
+                          <Link
+                            key={brand.id}
+                            href={`/catalog/${category.slug}?brand=${brand.id}`}
+                            className="brand-link"
+                          >
+                            {brand.logo ? (
+                              <span className="brand-logo">
+                                <img
+                                  src={brand.logo}
+                                  alt={brand.name}
+                                  width={20}
+                                  height={20}
+                                />
+                              </span>
+                            ) : null}
+                            <span>{brand.name}</span>
+                            <span className="product-count">
+                              ({brand.productCount})
+                            </span>
+                          </Link>
+                        ))
+                      ) : (
+                        <div className="no-brands">Нет доступных брендов</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default CategoriesNav;

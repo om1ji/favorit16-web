@@ -156,7 +156,7 @@ export default function AdminLayout({
       <Sidebar />
 
       <main className="admin-main">
-        <Header />
+        {/* <Header /> */}
         <div className="admin-content">{children}</div>
       </main>
     </div>
