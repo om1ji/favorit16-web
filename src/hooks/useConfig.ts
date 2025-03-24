@@ -23,6 +23,8 @@ export function useConfig<T>(
 
         // Формируем URL с параметрами
         const queryParams = new URLSearchParams({ section, ...params });
+        
+        // Возвращаемся к стандартному API маршруту, так как nginx больше не перехватывает запросы
         const response = await fetch(`/api/config?${queryParams}`);
 
         if (!response.ok) {

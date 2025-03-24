@@ -15,20 +15,6 @@ const nextConfig = {
       },
     ],
   },
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/api/admin/:path*',
-          destination: 'http://localhost:8000/admin/:path*',
-        },
-        {
-          source: '/api/:path*',
-          destination: 'http://localhost:8000/:path*',
-        }
-      ]
-    };
-  },
 };
 
 module.exports = nextConfig;
