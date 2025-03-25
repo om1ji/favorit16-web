@@ -158,7 +158,7 @@ api.interceptors.response.use(
 // Auth API
 export const login = async (credentials: LoginCredentials) => {
   const response = await api.post<AuthResponse>(
-    "//users/login/",
+    "users/login/",
     credentials,
   );
   return response.data;
@@ -166,19 +166,19 @@ export const login = async (credentials: LoginCredentials) => {
 
 export const register = async (data: RegisterData) => {
   const response = await api.post<AuthResponse>(
-    "//users/register/",
+    "/users/register/",
     data,
   );
   return response.data;
 };
 
 export const logout = async () => {
-  const response = await api.post("//users/logout/");
+  const response = await api.post("/users/logout/");
   return response.data;
 };
 
 export const getMe = async () => {
-  const response = await api.get<User>("//users/me/");
+  const response = await api.get<User>("/users/me/");
   return response.data;
 };
 
