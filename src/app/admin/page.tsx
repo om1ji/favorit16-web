@@ -58,126 +58,142 @@ const AdminDashboard = () => {
   const loading = useSelector(selectDashboardLoading);
   const error = useSelector(selectDashboardError);
 
+  console.log(dashboardData);
+
   useEffect(() => {
     dispatch(fetchDashboardData());
   }, [dispatch]);
 
+  let content;
+
   if (loading) {
-    return (
-      <div className="admin-dashboard">
-        <div className="loading">
-          <div className="loading-spinner"></div>
-          <p>Загрузка данных...</p>
-        </div>
+    content = (
+      <div className="loading">
+        <div className="loading-spinner"></div>
+        <p>Загрузка данных...</p>
       </div>
     );
-  }
-
-  if (error) {
-    return (
-      <div className="admin-dashboard">
-        <div className="error-container">
-          <ExclamationCircleIcon className="w-12 h-12 text-red-500" />
-          <h2>Ошибка загрузки данных</h2>
-          <p>{error}</p>
-          <button
-            onClick={() => dispatch(fetchDashboardData())}
-            className="retry-button"
-          >
-            Попробовать снова
-          </button>
-        </div>
+  } else if (error) {
+    content = (
+      <div className="error-container">
+        <ExclamationCircleIcon className="w-12 h-12 text-red-500" />
+        <h2>Ошибка загрузки данных</h2>
+        <p>{error}</p>
+        <button
+          onClick={() => dispatch(fetchDashboardData())}
+          className="retry-button"
+        >
+          Попробовать снова
+        </button>
       </div>
     );
-  }
+  } else if (!dashboardData) {
+    content = null;
+  } else {
+    content = (
+      <>
+        <h1 className="admin-title">Панель управления</h1>
 
-  if (!dashboardData) {
-    return null;
+        <div className="stats-grid">
+          {statsCards.map(({ title, icon: Icon, value, color }) => (
+            <div key={title} className="stats-card">
+              <div className={`icon-wrapper ${color}`}>
+                <Icon className="w-6 h-6 text-white" />
+              </div>
+              <div className="stats-content">
+                <h3>{title}</h3>
+                <p className="stats-value">{value(dashboardData)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="dashboard-grid">
+          <div className="admin-card">
+            <h2 className="admin-subtitle">Популярные товары</h2>
+            <div className="table-wrapper">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Товар</th>
+                    <th>Продажи</th>
+                    <th>Выручка</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardData.top_products && dashboardData.top_products.length > 0 ? (
+                    dashboardData.top_products.map((product) => (
+                      <tr key={product.id}>
+                        <td>{product.name}</td>
+                        <td>{(product.total_sales || 0).toLocaleString("ru-RU")}</td>
+                        <td>{(product.revenue || 0).toLocaleString("ru-RU")} ₽</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} className="text-center py-4">
+                        Нет данных о популярных товарах
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="admin-card">
+            <h2 className="admin-subtitle">Продажи по категориям</h2>
+            <div className="table-wrapper">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Категория</th>
+                    <th>Выручка</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardData.revenue_by_category && dashboardData.revenue_by_category.length > 0 ? (
+                    dashboardData.revenue_by_category.map((item) => (
+                      <tr key={item.category}>
+                        <td>{item.category}</td>
+                        <td>{(item.revenue || 0).toLocaleString("ru-RU")} ₽</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={2} className="text-center py-4">
+                        Нет данных о продажах по категориям
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="admin-card">
+            <h2 className="admin-subtitle">Статусы заказов</h2>
+            <div className="orders-status">
+              {Object.entries(dashboardData.orders_by_status || {}).map(
+                ([status, count]) => (
+                  <div key={status} className="status-item">
+                    <span className="status-label">{getStatusLabel(status)}</span>
+                    <span className="status-count">
+                      {(count || 0).toLocaleString("ru-RU")}
+                    </span>
+                  </div>
+                ),
+              )}
+            </div>
+          </div>
+        </div>
+      </>
+    );
   }
 
   return (
     <div className="admin-dashboard">
-      <h1 className="admin-title">Панель управления</h1>
-
-      <div className="stats-grid">
-        {statsCards.map(({ title, icon: Icon, value, color }) => (
-          <div key={title} className="stats-card">
-            <div className={`icon-wrapper ${color}`}>
-              <Icon className="w-6 h-6 text-white" />
-            </div>
-            <div className="stats-content">
-              <h3>{title}</h3>
-              <p className="stats-value">{value(dashboardData)}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="dashboard-grid">
-        <div className="admin-card">
-          <h2 className="admin-subtitle">Популярные товары</h2>
-          <div className="table-wrapper">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Товар</th>
-                  <th>Продажи</th>
-                  <th>Выручка</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dashboardData.top_products.map((product) => (
-                  <tr key={product.id}>
-                    <td>{product.name}</td>
-                    <td>
-                      {(product.total_sales || 0).toLocaleString("ru-RU")}
-                    </td>
-                    <td>{(product.revenue || 0).toLocaleString("ru-RU")} ₽</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="admin-card">
-          <h2 className="admin-subtitle">Продажи по категориям</h2>
-          <div className="table-wrapper">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Категория</th>
-                  <th>Выручка</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dashboardData.revenue_by_category.map((item) => (
-                  <tr key={item.category}>
-                    <td>{item.category}</td>
-                    <td>{(item.revenue || 0).toLocaleString("ru-RU")} ₽</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="admin-card">
-          <h2 className="admin-subtitle">Статусы заказов</h2>
-          <div className="orders-status">
-            {Object.entries(dashboardData.orders_by_status || {}).map(
-              ([status, count]) => (
-                <div key={status} className="status-item">
-                  <span className="status-label">{getStatusLabel(status)}</span>
-                  <span className="status-count">
-                    {(count || 0).toLocaleString("ru-RU")}
-                  </span>
-                </div>
-              ),
-            )}
-          </div>
-        </div>
-      </div>
+      {content}
     </div>
   );
 };

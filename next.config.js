@@ -16,7 +16,7 @@ const nextConfig = {
         pathname: "/media/**",
       },
     ],
-    formats: ['image/avif', 'image/webp', 'image/jpeg', 'image/png'],
+    formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60,
   },
 };

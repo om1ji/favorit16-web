@@ -229,7 +229,7 @@ const CategoriesPage = () => {
           <div className="error-state">
             <p>{error}</p>
           </div>
-        ) : categories.length === 0 ? (
+        ) : categories && categories.length === 0 ? (
           <div className="empty-state">
             <p>Категории не найдены</p>
             {searchTerm && (
@@ -254,7 +254,7 @@ const CategoriesPage = () => {
                 <div className="category-actions">Действия</div>
               </div>
 
-              {categories.map((category) => (
+              {categories && categories.map((category) => (
                 <div key={category.id} className="category-item">
                   <div className="category-name">
                     <div className="name-content">

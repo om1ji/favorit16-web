@@ -208,55 +208,63 @@ const ProductsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td className="product-image">
-                  {product.images?.length > 0 && (
-                    <img
-                      src={product.images[0].thumbnail}
-                      alt={product.images[0].alt_text}
-                    />
-                  )}
-                </td>
-                <td>{product.name}</td>
-                <td>{product.category.name}</td>
-                <td>{product.price.toLocaleString("ru-RU")} ₽</td>
-                <td>
-                  <span
-                    className={`status ${product.in_stock ? "in-stock" : "out-of-stock"}`}
-                  >
-                    {product.in_stock ? "В наличии" : "Нет в наличии"}
-                  </span>
-                </td>
-                <td>
-                  <div className="sales-info">
-                    <span>
-                      {(product.total_orders ?? 0).toLocaleString("ru-RU")}{" "}
-                      заказов
-                    </span>
-                    <span className="revenue">
-                      {(product.total_revenue ?? 0).toLocaleString("ru-RU")} ₽
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <div className="actions">
-                    <Link
-                      href={`/admin/products/${product.id}`}
-                      className="text-blue-600 hover:text-blue-800"
+            {products && products.length > 0 ? (
+              products.map((product) => (
+                <tr key={product.id}>
+                  <td className="product-image">
+                    {product.images?.length > 0 && (
+                      <img
+                        src={product.images[0].thumbnail}
+                        alt={product.images[0].alt_text}
+                      />
+                    )}
+                  </td>
+                  <td>{product.name}</td>
+                  <td>{product.category.name}</td>
+                  <td>{product.price.toLocaleString("ru-RU")} ₽</td>
+                  <td>
+                    <span
+                      className={`status ${product.in_stock ? "in-stock" : "out-of-stock"}`}
                     >
-                      Редактировать
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="admin-btn danger"
-                    >
-                      Удалить
-                    </button>
-                  </div>
+                      {product.in_stock ? "В наличии" : "Нет в наличии"}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="sales-info">
+                      <span>
+                        {(product.total_orders ?? 0).toLocaleString("ru-RU")}{" "}
+                        заказов
+                      </span>
+                      <span className="revenue">
+                        {(product.total_revenue ?? 0).toLocaleString("ru-RU")} ₽
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="actions">
+                      <Link
+                        href={`/admin/products/${product.id}`}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Редактировать
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(product.id)}
+                        className="admin-btn danger"
+                      >
+                        Удалить
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={7} className="text-center py-4">
+                  Товары не найдены
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
