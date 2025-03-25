@@ -19,12 +19,11 @@ export default function Footer() {
           <div>
             <Link href="/" className="flex items-center">
               <span className="font-bold text-2xl text-white mb-4">
-                {siteInfo?.siteName || "Favorit116"}
+                {siteInfo?.siteName}
               </span>
             </Link>
             <p className="text-gray-400 mt-4 mb-6">
-              {siteInfo?.siteDescription ||
-                "Ваш надежный магазин электроники и аксессуаров. Мы предлагаем только качественные товары по доступным ценам."}
+              {siteInfo?.siteDescription}
             </p>
             <div className="mb-6">
               <SocialLinks className="flex space-x-3" />
@@ -76,7 +75,7 @@ export default function Footer() {
         {/* Bottom section with copyright */}
         <div className="mt-12 pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
           <p>
-            © {currentYear} {siteInfo?.siteName || "Favorit116"}. Все права
+            © {currentYear} {siteInfo?.siteName}. Все права
             защищены.
           </p>
           <div className="mt-4 md:mt-0 flex space-x-6">

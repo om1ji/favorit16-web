@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { adminAPI } from "@/services/api";
 import axios from "axios";
-import { API_URL, API_VERSION } from "@/config/api";
 
 interface TopProduct {
   id: number;

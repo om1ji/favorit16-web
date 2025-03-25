@@ -48,7 +48,7 @@ const Categories = () => {
             Популярные категории
           </h2>
           <p className="text-xl text-text-subtitle max-w-2xl mx-auto">
-            Выбирайте из широкого ассортимента качественной электроники
+            Выбирайте из широкого ассортимента шин и дисков
           </p>
         </motion.div>
 

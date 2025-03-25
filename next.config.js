@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    unoptimized: false,
+    domains: ['api.favorit-116.ru', 'localhost'],
     remotePatterns: [
       {
         protocol: "http",
@@ -14,6 +16,8 @@ const nextConfig = {
         pathname: "/media/**",
       },
     ],
+    formats: ['image/avif', 'image/webp', 'image/jpeg', 'image/png'],
+    minimumCacheTTL: 60,
   },
 };
 

@@ -7,11 +7,11 @@ import {
   AdminProduct,
   AdminProductsResponse,
 } from "@/types/product";
-import { API_URL, API_VERSION } from "@/config/api";
+import { API_URL } from "@/config/api";
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: `${API_URL}/api/${API_VERSION}`,
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -65,7 +65,7 @@ api.interceptors.response.use(
         // Try standard JWT refresh endpoint first
         try {
           const response = await axios.post(
-            `${API_URL}/api/${API_VERSION}/auth/token/refresh/`,
+            `${API_URL}/auth/token/refresh/`,
             { refresh: refreshToken },
             { headers: { "Content-Type": "application/json" } },
           );
@@ -84,7 +84,7 @@ api.interceptors.response.use(
 
           // If that fails, try the custom endpoint
           const response = await axios.post(
-            `${API_URL}/api/${API_VERSION}/users/refresh/`,
+            `${API_URL}/users/refresh/`,
             { refresh: refreshToken },
             { headers: { "Content-Type": "application/json" } },
           );
