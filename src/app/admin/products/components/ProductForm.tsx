@@ -27,12 +27,22 @@ interface ProductFormData {
   id?: string;
   name: string;
   category_id: string;
+  brand_id?: string;
   price: string;
   old_price: string;
   description: string;
   in_stock: boolean;
   quantity: number;
+  diameter?: number;
+  width?: number;
+  profile?: number;
   images: ImageMetadata[];
+}
+
+interface Brand {
+  id: string;
+  name: string;
+  logo: string;
 }
 
 interface ProductFormProps {
@@ -47,48 +57,57 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<AdminCategory[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
     category_id: "",
+    brand_id: "",
     price: "",
     old_price: "",
     description: "",
     in_stock: true,
     quantity: 0,
+    diameter: undefined,
+    width: undefined,
+    profile: undefined,
     images: [],
     ...initialData,
   });
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const data = await adminAPI.getCategoriesForSelect();
-        console.log("Categories from API:", data);
+        const [categoriesData, brandsData] = await Promise.all([
+          adminAPI.getCategoriesForSelect(),
+          adminAPI.getBrands()
+        ]);
 
-        let categoriesData: AdminCategory[] = [];
-        if (Array.isArray(data)) {
-          categoriesData = data as AdminCategory[];
-        } else if (data && typeof data === "object") {
-          const objData = data as Record<string, unknown>;
-          categoriesData = (objData.results ||
+        let categoriesDataProcessed: AdminCategory[] = [];
+        if (Array.isArray(categoriesData)) {
+          categoriesDataProcessed = categoriesData as AdminCategory[];
+        } else if (categoriesData && typeof categoriesData === "object") {
+          const objData = categoriesData as Record<string, unknown>;
+          categoriesDataProcessed = (objData.results ||
             objData.categories ||
             objData.data ||
             []) as AdminCategory[];
         }
 
-        console.log("Processed categories:", categoriesData);
-        setCategories(categoriesData);
+        setCategories(categoriesDataProcessed);
+        setBrands(brandsData.results);
       } catch (error) {
-        console.error("Failed to fetch categories:", error);
+        console.error("Failed to fetch data:", error);
         setErrors((prev) => ({
           ...prev,
           category: "Не удалось загрузить категории",
+          brand: "Не удалось загрузить бренды",
         }));
       }
     };
-    fetchCategories();
+
+    fetchData();
   }, []);
 
   const formatPrice = (value: string): string => {
@@ -242,8 +261,21 @@ const ProductForm: React.FC<ProductFormProps> = ({
         }))
       };
       
+      // Add optional fields if they exist
       if (formData.old_price) {
         jsonData.old_price = Number(formData.old_price).toFixed(2);
+      }
+      if (formData.brand_id) {
+        jsonData.brand = formData.brand_id;
+      }
+      if (formData.diameter) {
+        jsonData.diameter = Number(formData.diameter);
+      }
+      if (formData.width) {
+        jsonData.width = Number(formData.width);
+      }
+      if (formData.profile) {
+        jsonData.profile = Number(formData.profile);
       }
 
       console.log("JSON data being sent:", jsonData);
@@ -331,6 +363,26 @@ const ProductForm: React.FC<ProductFormProps> = ({
         )}
       </div>
 
+      <div className="form-group">
+        <label htmlFor="brand">Бренд</label>
+        <select
+          id="brand"
+          name="brand_id"
+          value={formData.brand_id || ""}
+          onChange={handleChange}
+        >
+          <option value="">Выберите бренд</option>
+          {brands.map((brand) => (
+            <option key={brand.id} value={brand.id}>
+              {brand.name}
+            </option>
+          ))}
+        </select>
+        {errors.brand_id && (
+          <span className="error">{errors.brand_id}</span>
+        )}
+      </div>
+
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="price">Цена *</label>
@@ -387,6 +439,53 @@ const ProductForm: React.FC<ProductFormProps> = ({
             />
             В наличии
           </label>
+        </div>
+      </div>
+
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="width">Ширина шины</label>
+          <input
+            type="number"
+            id="width"
+            name="width"
+            value={formData.width || ""}
+            onChange={handleChange}
+            min="0"
+            max="999"
+            placeholder="Например: 225"
+          />
+          {errors.width && <span className="error">{errors.width}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="profile">Профиль шины</label>
+          <input
+            type="number"
+            id="profile"
+            name="profile"
+            value={formData.profile || ""}
+            onChange={handleChange}
+            min="0"
+            max="999"
+            placeholder="Например: 45"
+          />
+          {errors.profile && <span className="error">{errors.profile}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="diameter">Диаметр</label>
+          <input
+            type="number"
+            id="diameter"
+            name="diameter"
+            value={formData.diameter || ""}
+            onChange={handleChange}
+            min="0"
+            max="999"
+            placeholder="Например: 17"
+          />
+          {errors.diameter && <span className="error">{errors.diameter}</span>}
         </div>
       </div>
 

@@ -434,6 +434,14 @@ export const adminAPI = {
     );
     return response.data;
   },
+
+  // Получение списка брендов
+  getBrands: async () => {
+    const response = await api.get<{ count: number; results: Array<{ id: string; name: string; logo: string }> }>(
+      "/products/brands/",
+    );
+    return response.data;
+  },
 };
 
 export default api;

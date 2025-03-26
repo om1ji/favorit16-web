@@ -172,7 +172,7 @@ const TireFilters: React.FC<TireFiltersProps> = ({ onFilterChange }) => {
 
   return (
     <div className="tire-filters">
-      <h3>Параметры шин</h3>
+      <h3>Параметры</h3>
 
       {isLoading ? (
         <div className="loading-filters">Загрузка фильтров...</div>
