@@ -129,19 +129,11 @@ export const fetchProducts = createAsyncThunk(
         if (isSlug) {
           const category = categories.find((c) => c.slug === filters.category);
           if (category) {
-            // Отправляем id категории в API запрос
             queryParams.append("category", category.id);
-            console.log(
-              `Converting category slug ${filters.category} to ID ${category.id} for API request`,
-            );
           } else {
-            console.warn(
-              `Category with slug ${filters.category} not found, using slug as fallback`,
-            );
             queryParams.append("category", filters.category);
           }
         } else {
-          // Если это числовой id, используем как есть
           queryParams.append("category", filters.category);
         }
       }

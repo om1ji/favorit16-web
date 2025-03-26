@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -12,6 +12,9 @@ import {
   selectProducts,
   selectLoading,
 } from "@/redux/features/productsSlice";
+import { getImageUrl } from "@/utils/imageUtils";
+import TestModeAlert from "@/components/ui/TestModeAlert";
+import { defaultConfig } from "@/lib/config/default-config";
 
 const container = {
   hidden: { opacity: 0 },
@@ -33,12 +36,11 @@ const PopularProducts = () => {
   const products = useSelector(selectProducts);
   const loading = useSelector(selectLoading);
   const hasFetched = useRef(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
-    // Загружаем популярные продукты только один раз
     if (!hasFetched.current && !loading) {
       hasFetched.current = true;
-      // Используем только те поля, которые существуют в типе ProductFilters
       dispatch(
         fetchProducts({
           ordering: "-created_at",
@@ -48,8 +50,20 @@ const PopularProducts = () => {
     }
   }, [dispatch, loading]);
 
+  const handleBuyClick = () => {
+    setShowAlert(true);
+  }
+
   return (
     <section className="py-24">
+      {showAlert && (
+        <TestModeAlert 
+          onClose={() => setShowAlert(false)} 
+          phone={defaultConfig.contacts.phone} 
+          telegram={defaultConfig.social.telegram.url}
+        />
+      )}
+
       <div className=" mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -102,11 +116,11 @@ const PopularProducts = () => {
                     <div className="relative h-64 bg-gray-100">
                       {product.feature_image && (
                         <Image
-                          src={product.feature_image.image}
+                          src={getImageUrl(product.feature_image.image)}
                           alt={product.feature_image.alt_text || product.name}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                          loading={index < 2 ? "eager" : "lazy"} // Первые два изображения загружаются сразу, остальные лениво
+                          loading={index < 2 ? "eager" : "lazy"}
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                       )}
@@ -141,7 +155,13 @@ const PopularProducts = () => {
                         </span>
                       </div>
                       {product.in_stock ? (
-                        <button className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                        <button 
+                          className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleBuyClick();
+                          }}
+                        >
                           <ShoppingCartIcon className="h-5 w-5" />
                         </button>
                       ) : (

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   MagnifyingGlassIcon,
@@ -11,12 +10,11 @@ import {
 import { adminAPI } from "@/services/api";
 import "./products.scss";
 import axios from "axios";
-import { AdminProduct, AdminProductsResponse } from "@/types/product";
+import { AdminProduct } from "@/types/product";
+import { getImageUrl } from "@/utils/imageUtils";
 
 const ProductsPage = () => {
-  const router = useRouter();
   const [products, setProducts] = useState<AdminProduct[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -214,7 +212,7 @@ const ProductsPage = () => {
                   <td className="product-image">
                     {product.images?.length > 0 && (
                       <img
-                        src={product.images[0].thumbnail}
+                        src={getImageUrl(product.images[0].thumbnail)}
                         alt={product.images[0].alt_text}
                       />
                     )}

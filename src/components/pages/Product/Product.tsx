@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addToCart } from "@/redux/features/cartSlice";
+import TestModeAlert from "@/components/ui/TestModeAlert";
 import "./Product.scss";
+import { defaultConfig } from "@/lib/config/default-config";
 
 interface ProductProps {
   product: {
@@ -27,6 +28,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [showAlert, setShowAlert] = useState(false);
 
   // Моки для характеристик товара
   const specs = {
@@ -61,6 +63,11 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   };
 
   const handleAddToCart = () => {
+    // Show alert instead of banner
+    setShowAlert(true);
+    
+    // Закомментировано, так как в тестовом режиме заказы не принимаются
+    /*
     dispatch(
       addToCart({
         id: product.id,
@@ -69,10 +76,19 @@ const Product: React.FC<ProductProps> = ({ product }) => {
         image: product.image,
       }),
     );
+    */
   };
 
   return (
     <div className="product-details">
+      {showAlert && (
+        <TestModeAlert 
+          onClose={() => setShowAlert(false)} 
+          phone={defaultConfig.contacts.phone} 
+          telegram={defaultConfig.social.telegram.url}
+        />
+      )}
+      
       <div className="container">
         <div className="product-content">
           {/* Галерея изображений */}
@@ -152,7 +168,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
                 </button>
               </div>
               <button className="add-to-cart-btn" onClick={handleAddToCart}>
-                Добавить в корзину
+                Купить
               </button>
               <button className="add-to-favorites-btn">♡</button>
             </div>

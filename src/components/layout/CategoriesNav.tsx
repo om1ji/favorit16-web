@@ -9,9 +9,8 @@ import {
   selectLoading,
 } from "@/redux/features/productsSlice";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import useCategoryBrands from "@/hooks/useCategoryBrands";
-import Image from "next/image";
 import "./CategoriesNav.scss";
 
 const CategoriesNav = () => {
@@ -19,7 +18,6 @@ const CategoriesNav = () => {
   const categories = useSelector(selectCategories);
   const loading = useSelector(selectLoading);
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 

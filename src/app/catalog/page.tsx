@@ -14,9 +14,8 @@ import {
   selectCurrentPage,
   setCurrentPage,
 } from "@/redux/features/productsSlice";
-import { Product, ProductFilters, Category } from "@/types/api";
+import { Product, ProductFilters } from "@/types/api";
 import Link from "next/link";
-import Image from "next/image";
 import TireFilters from "@/components/filters/TireFilters";
 import "./catalog.scss";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -34,8 +33,7 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
   const totalCount = useSelector(selectTotalProducts);
   const currentPage = useSelector(selectCurrentPage);
   const [activeFilters, setActiveFilters] = useState<ProductFilters>({});
-
-  const searchParams = useSearchParams();
+  const [showAlert, setShowAlert] = useState(false);
   const router = useRouter();
 
   const fetchingProducts = useRef(false);
@@ -44,11 +42,9 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
   const prevActiveFilters = useRef<ProductFilters>({});
   const prevPage = useRef<number>(1);
   const initialFiltersSet = useRef(false);
-  const initialCategoryApplied = useRef(false);
 
   const prevTireFilters = useRef<any>({});
 
-  const hasActiveCategory = Boolean(activeFilters.category);
 
   const activeCategory = categories.find(
     (cat) => cat.slug === activeFilters.category,
@@ -320,21 +316,18 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
     );
   };
 
+  const handleBuyClick = () => {
+    setShowAlert(true);
+  };
+
   const renderProductsList = () => {
     return (
       <div className="products-section">
         <div className="catalog-header">
-          <Link href="/catalog" className="back-to-categories">
-            ← Все категории
-          </Link>
-
-          {activeCategory && (
-            <h2 className="category-title">{activeCategory.name}</h2>
-          )}
-
           <div className="sorting-container">
             <select
               className="sort-select"
+              style={{ color: "black" }}
               onChange={handleSortChange}
               value={activeFilters.ordering || ""}
             >
@@ -410,7 +403,7 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
                       <button
                         className="add-to-cart"
                         onClick={(e) => {
-                          e.preventDefault();
+                          handleBuyClick();
                         }}
                       >
                         Купить

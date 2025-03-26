@@ -7,6 +7,7 @@ import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { adminAPI } from "@/services/api";
 import { Category } from "@/types/product";
 import "./ProductForm.scss";
+import { getImageUrl } from "@/utils/imageUtils";
 
 interface AdminCategory extends Category {
   level: number;
@@ -126,15 +127,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   const handleImageUpload = async (files: FileList) => {
     setLoading(true);
-    const newImages: ImageMetadata[] = [];
 
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
 
+        // Create a temporary placeholder with a unique ID
         const tempId = `temp-${Date.now()}-${i}`;
         const tempUrl = URL.createObjectURL(file);
 
+        // Add the temporary image to the form data
         setFormData((prev) => ({
           ...prev,
           images: [
@@ -150,8 +152,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
         }));
 
         try {
+          console.log(`Uploading image ${i+1}/${files.length}: ${file.name}`);
+          
+          // Upload the image to the server
           const data = await adminAPI.uploadImage(file);
+          console.log("Upload successful, received:", data);
 
+          // Replace the temporary image with the actual one from the server
           setFormData((prev) => ({
             ...prev,
             images: prev.images.map((img) =>
@@ -167,10 +174,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
             ),
           }));
 
+          // Clean up the object URL to avoid memory leaks
           URL.revokeObjectURL(tempUrl);
         } catch (error) {
           console.error(`Error uploading image ${file.name}:`, error);
 
+          // Mark the image as failed but keep it in the list
           setFormData((prev) => ({
             ...prev,
             images: prev.images.map((img) =>
@@ -218,46 +227,42 @@ const ProductForm: React.FC<ProductFormProps> = ({
     setErrors({});
 
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.name);
-      formDataToSend.append("category", formData.category_id);
-      formDataToSend.append("price", Number(formData.price).toFixed(2));
+      // Create a JSON object for the entire payload
+      const jsonData: Record<string, any> = {
+        name: formData.name,
+        category: formData.category_id,
+        price: Number(formData.price).toFixed(2),
+        description: formData.description,
+        in_stock: formData.in_stock,
+        quantity: formData.quantity,
+        images: formData.images.map(img => ({
+          id: img.id,
+          alt_text: img.alt_text || '',
+          is_feature: img.is_feature
+        }))
+      };
+      
       if (formData.old_price) {
-        formDataToSend.append(
-          "old_price",
-          Number(formData.old_price).toFixed(2),
-        );
+        jsonData.old_price = Number(formData.old_price).toFixed(2);
       }
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("in_stock", formData.in_stock.toString());
-      formDataToSend.append("quantity", formData.quantity.toString());
 
-      formData.images.forEach((img, index) => {
-        formDataToSend.append(`images[${index}]`, img.id);
-      });
-
-      formData.images.forEach((img, index) => {
-        formDataToSend.append(`images_metadata[${index}][image_id]`, img.id);
-        formDataToSend.append(
-          `images_metadata[${index}][alt_text]`,
-          img.alt_text,
-        );
-        formDataToSend.append(
-          `images_metadata[${index}][is_feature]`,
-          img.is_feature.toString(),
-        );
-      });
+      console.log("JSON data being sent:", jsonData);
 
       if (isEdit && initialData?.id) {
-        await adminAPI.updateProduct(initialData.id, formDataToSend);
+        // Use JSON for update
+        const response = await adminAPI.updateProductJson(initialData.id, jsonData);
+        console.log("Update successful:", response);
       } else {
-        await adminAPI.createProduct(formDataToSend);
+        // Use JSON for create
+        const response = await adminAPI.createProductJson(jsonData);
+        console.log("Create successful:", response);
       }
 
       router.push("/admin/products");
     } catch (error: any) {
       console.error("Error saving product:", error);
       if (error.response?.data) {
+        console.log("Error response data:", error.response.data);
         setErrors(error.response.data);
       } else {
         setErrors({ submit: "Failed to save product" });
@@ -435,7 +440,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   )}
                   <Image
                     src={
-                      image.thumbnail || image.url || "/images/placeholder.svg"
+                      getImageUrl(image.thumbnail || image.url) || "/images/placeholder.svg"
                     }
                     alt={image.alt_text}
                     width={100}

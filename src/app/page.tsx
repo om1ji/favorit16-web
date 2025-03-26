@@ -5,7 +5,6 @@ import HeroSection from "@/components/sections/HeroSection";
 import Features from "@/components/sections/Features";
 import Categories from "@/components/sections/Categories";
 import PopularProducts from "@/components/sections/PopularProducts";
-import LatestNews from "@/components/sections/LatestNews";
 import Newsletter from "@/components/sections/Newsletter";
 import TestModeAlert from "@/components/ui/TestModeAlert";
 import { defaultConfig } from "@/lib/config/default-config";
@@ -23,7 +22,6 @@ export default function Home() {
       <Features />
       <Categories />
       <PopularProducts />
-      {/* <LatestNews /> */}
       <Newsletter />
 
       {showAlert && (

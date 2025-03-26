@@ -10,6 +10,7 @@ import {
   fetchCategories,
   selectCategories,
 } from "@/redux/features/productsSlice";
+import { getImageUrl } from "@/utils/imageUtils";
 
 const container = {
   hidden: { opacity: 0 },
@@ -65,7 +66,7 @@ const Categories = () => {
                 <div className="group relative h-80 bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                   {category.image && (
                     <Image
-                      src={category.image}
+                      src={getImageUrl(category.image)}
                       alt={category.name}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"

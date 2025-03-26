@@ -50,7 +50,6 @@ function AppContent({ children }: { children: React.ReactNode }) {
 
         const isAuthPage = pathname === "/login" || pathname === "/register";
         if (isAuthPage) {
-          console.log("Skipping auth check on auth page:", pathname);
           setIsInitialized(true);
           return;
         }
@@ -58,22 +57,14 @@ function AppContent({ children }: { children: React.ReactNode }) {
         const accessToken = localStorage.getItem("access_token");
         const refreshToken = localStorage.getItem("refresh_token");
 
-        console.log("AppContent init:", {
-          hasAccessToken: !!accessToken,
-          hasRefreshToken: !!refreshToken,
-          pathname,
-        });
-
         if (accessToken) {
           try {
             await dispatch(getMe() as any);
             await dispatch(fetchCart() as any);
           } catch (error) {
-            console.error("Error loading user data:", error);
 
             if (refreshToken) {
               try {
-                console.log("Manual token refresh attempt");
 
                 const response = await fetch(
                   `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/token/refresh/`,
@@ -87,12 +78,10 @@ function AppContent({ children }: { children: React.ReactNode }) {
                 if (response.ok) {
                   const data = await response.json();
                   localStorage.setItem("access_token", data.access);
-                  console.log("Manual token refresh successful");
 
                   await dispatch(getMe() as any);
                   await dispatch(fetchCart() as any);
                 } else {
-                  console.error("Manual token refresh failed");
 
                   const isProtectedPage =
                     pathname?.startsWith("/admin") ||
@@ -101,16 +90,9 @@ function AppContent({ children }: { children: React.ReactNode }) {
                   if (!isProtectedPage) {
                     localStorage.removeItem("access_token");
                     localStorage.removeItem("refresh_token");
-                  } else {
-                    console.log(
-                      "Not clearing tokens on protected page:",
-                      pathname,
-                    );
                   }
                 }
               } catch (refreshError) {
-                console.error("Manual token refresh error:", refreshError);
-
                 const isProtectedPage =
                   pathname?.startsWith("/admin") ||
                   pathname?.startsWith("/profile");
@@ -126,7 +108,6 @@ function AppContent({ children }: { children: React.ReactNode }) {
 
         setIsInitialized(true);
       } catch (error) {
-        console.error("App initialization error:", error);
         setIsInitialized(true);
       }
     };

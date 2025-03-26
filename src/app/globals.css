@@ -49,7 +49,7 @@ body {
   input,
   textarea,
   select {
-    color: #fff;
+    color: #000;
     background-color: white;
   }
 }

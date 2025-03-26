@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { adminAPI } from "@/services/api";
 import { Category } from "@/types/product";
@@ -35,8 +34,10 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     updated_at: "",
   });
 
+  // Track the uploaded image state
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploadedImageId, setUploadedImageId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -79,7 +80,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setImageFile(file);
@@ -94,6 +95,22 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           return newErrors;
         });
       }
+
+      // Upload image immediately when selected
+      try {
+        setLoading(true);
+        const uploadResult = await adminAPI.uploadImage(file);
+        console.log("Image uploaded successfully:", uploadResult);
+        setUploadedImageId(uploadResult.id);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        setLoading(false);
+        setErrors(prev => ({
+          ...prev,
+          image: "Ошибка при загрузке изображения"
+        }));
+      }
     }
   };
 
@@ -101,6 +118,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     setImageFile(null);
     setPreviewUrl(null);
     setFormData((prev) => ({ ...prev, image: null }));
+    setUploadedImageId(null);
   };
 
   const validateForm = (): boolean => {
@@ -128,22 +146,29 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     setLoading(true);
 
     try {
-      const formDataToSend = new FormData();
+      // Create JSON data object instead of FormData
+      const jsonData: Record<string, any> = {
+        name: formData.name
+      };
 
-      formDataToSend.append("name", formData.name);
-
+      // Add parent if it exists
       if (formData.parent) {
-        formDataToSend.append("parent", formData.parent);
+        jsonData.parent = formData.parent;
       }
 
-      if (imageFile) {
-        formDataToSend.append("image", imageFile);
+      // Add image ID if it was uploaded
+      if (uploadedImageId) {
+        jsonData.image_id = uploadedImageId;
       }
+
+      console.log("Sending category data:", jsonData);
 
       if (isEdit) {
-        await adminAPI.updateCategory(formData.id, formDataToSend);
+        // Use JSON for update
+        await adminAPI.updateCategoryJson(formData.id, jsonData);
       } else {
-        await adminAPI.createCategory(formDataToSend);
+        // Use JSON for create
+        await adminAPI.createCategoryJson(jsonData);
       }
 
       router.push("/admin/categories");
@@ -222,7 +247,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
             <div className="image-upload-controls">
               <label htmlFor="image-upload" className="upload-button">
-                {previewUrl ? "Изменить изображение" : "Загрузить изображение"}
+                {loading ? "Загрузка..." : previewUrl ? "Изменить изображение" : "Загрузить изображение"}
               </label>
               <input
                 type="file"

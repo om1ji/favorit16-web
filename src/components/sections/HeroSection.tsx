@@ -4,11 +4,8 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useSiteInfo } from "@/hooks/useConfig";
 
 const HeroSection = () => {
-  const { data: siteInfo, loading } = useSiteInfo();
-
   return (
     <section className="relative min-h-[100vh] flex items-center">
       <div className="absolute inset-0 overflow-hidden bg-gradient-to-r from-black to-black">

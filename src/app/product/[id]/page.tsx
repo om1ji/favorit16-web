@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import {
@@ -13,6 +13,8 @@ import {
 } from "@/redux/features/productsSlice";
 import Link from "next/link";
 import ProductImageCarousel from "@/components/product/ProductImageCarousel";
+import TestModeAlert from "@/components/ui/TestModeAlert";
+import { defaultConfig } from "@/lib/config/default-config";
 import "./styles.scss";
 
 interface Props {
@@ -28,6 +30,7 @@ export default function ProductPage({ params }: Props) {
   const relatedProducts = useSelector(selectProducts);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     if (resolvedParams.id) {
@@ -45,6 +48,10 @@ export default function ProductPage({ params }: Props) {
       );
     }
   }, [dispatch, product?.category.id]);
+
+  const handleBuyClick = () => {
+    setShowAlert(true);
+  };
 
   if (loading) {
     return (
@@ -82,22 +89,14 @@ export default function ProductPage({ params }: Props) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-16">
-      {/* Breadcrumbs */}
-      <div className="text-sm breadcrumbs mb-8">
-        <Link href="/catalog" className="text-primary hover:text-primary-dark">
-          Каталог
-        </Link>
-        <span className="mx-2">/</span>
-        <Link
-          href={`/catalog?category=${product.category.slug}`}
-          className="text-primary hover:text-primary-dark"
-        >
-          {product.category.name}
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-gray-500">{product.name}</span>
-      </div>
+    <div className="container mx-auto px-4 py-16">
+      {showAlert && (
+        <TestModeAlert 
+          onClose={() => setShowAlert(false)} 
+          phone={defaultConfig.contacts.phone} 
+          telegram={defaultConfig.social.telegram.url}
+        />
+      )}
 
       {/* Product Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
@@ -152,8 +151,12 @@ export default function ProductPage({ params }: Props) {
           </div>
 
           {product.in_stock && (
-            <button className="w-64 py-3 px-6 text-white bg-primary hover:bg-primary-dark rounded-lg transition-colors">
-              Добавить в корзину
+            <button 
+              className="w-64 py-3 px-6 bg-primary hover:bg-primary-dark rounded-lg transition-colors"
+              style={{ color: "black" }}
+              onClick={handleBuyClick}
+            >
+              Купить
             </button>
           )}
 

@@ -233,7 +233,7 @@ export const adminAPI = {
     status?: string;
     ordering?: string;
   }) => {
-    const response = await api.get<AdminProductsResponse>("/admin/products/", {
+    const response = await api.get<AdminProductsResponse>("/products-admin/products/", {
       params,
     });
     return response.data;
@@ -247,7 +247,7 @@ export const adminAPI = {
     ordering?: string;
   }) => {
     const response = await api.get<{ count: number; results: Category[] }>(
-      "/admin/categories/",
+      "/products-admin/categories/",
       { params },
     );
     return response.data;
@@ -256,20 +256,20 @@ export const adminAPI = {
   // Получение категорий для селекта
   getCategoriesForSelect: async () => {
     const response = await api.get<AdminCategory[]>(
-      "/admin/categories/select/",
+      "/products-admin/categories/select/",
     );
     return response.data;
   },
 
   // Получение детальной информации о категории
   getCategory: async (id: string) => {
-    const response = await api.get<Category>(`/admin/categories/${id}/`);
+    const response = await api.get<Category>(`/products-admin/categories/${id}/`);
     return response.data;
   },
 
   // Создание новой категории
   createCategory: async (data: FormData) => {
-    const response = await api.post<Category>("/admin/categories/", data, {
+    const response = await api.post<Category>("/products-admin/categories/", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -280,11 +280,28 @@ export const adminAPI = {
   // Обновление категории
   updateCategory: async (id: string, data: FormData) => {
     const response = await api.patch<Category>(
-      `/admin/categories/${id}/`,
+      `/products-admin/categories/${id}/`,
       data,
       {
         headers: {
           "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+    return response.data;
+  },
+
+  // Обновление категории с использованием JSON
+  updateCategoryJson: async (id: string, data: any) => {
+    console.log("Updating category with ID using JSON:", id);
+    console.log("JSON data being sent:", data);
+    
+    const response = await api.patch<Category>(
+      `/products-admin/categories/${id}/`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
         },
       },
     );
@@ -293,30 +310,26 @@ export const adminAPI = {
 
   // Удаление категории
   deleteCategory: async (id: string) => {
-    const response = await api.delete(`/admin/categories/${id}/`);
+    const response = await api.delete(`/products-admin/categories/${id}/`);
     return response.status;
   },
 
   // Получение деталей продукта
   getProduct: async (id: string) => {
-    const response = await api.get<AdminProduct>(`/admin/products/${id}/`);
-    return response.data;
-  },
-
-  // Создание нового продукта
-  createProduct: async (data: FormData) => {
-    const response = await api.post<AdminProduct>("/admin/products/", data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await api.get<AdminProduct>(`/products-admin/products/${id}/`);
     return response.data;
   },
 
   // Обновление продукта
   updateProduct: async (id: string, data: FormData) => {
+    console.log("Updating product with ID:", id);
+    console.log("Form data being sent in API call:");
+    for (const pair of data.entries()) {
+      console.log(pair[0], typeof pair[1], pair[1]);
+    }
+    
     const response = await api.patch<AdminProduct>(
-      `/admin/products/${id}/`,
+      `/products-admin/products/${id}/`,
       data,
       {
         headers: {
@@ -326,15 +339,58 @@ export const adminAPI = {
     );
     return response.data;
   },
+  
+  // Обновление продукта с JSON данными
+  updateProductJson: async (id: string, data: any) => {
+    console.log("Updating product with ID using JSON:", id);
+    console.log("JSON data being sent:", data);
+    
+    const response = await api.patch<AdminProduct>(
+      `/products-admin/products/${id}/`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return response.data;
+  },
+
+  // Создание нового продукта
+  createProduct: async (data: FormData) => {
+    const response = await api.post<AdminProduct>("/products-admin/products/", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
+  
+  // Создание нового продукта с JSON данными
+  createProductJson: async (data: any) => {
+    console.log("Creating product with JSON data:", data);
+    
+    const response = await api.post<AdminProduct>(
+      "/products-admin/products/", 
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return response.data;
+  },
 
   // Удаление продукта
   deleteProduct: async (id: string) => {
-    await api.delete(`/admin/products/${id}/`);
+    await api.delete(`/products-admin/products/${id}/`);
   },
 
   // Получение данных дашборда
   getDashboard: async () => {
-    const response = await api.get("/admin/dashboard/");
+    const response = await api.get("/products-admin/dashboard/");
     return response.data;
   },
 
@@ -343,15 +399,39 @@ export const adminAPI = {
     const formData = new FormData();
     formData.append("image", file);
 
-    const response = await api.post<{
-      id: string;
-      image: string;
-      thumbnail: string;
-    }>("/admin/upload/image/", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
+    console.log("Uploading image:", file.name, "Size:", file.size, "Type:", file.type);
+    
+    try {
+      const response = await api.post<{
+        id: string;
+        image: string;
+        thumbnail: string;
+      }>("/products-admin/upload/image/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Image upload successful. Response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      throw error;
+    }
+  },
+
+  // Создание новой категории с использованием JSON
+  createCategoryJson: async (data: any) => {
+    console.log("Creating category with JSON data:", data);
+    
+    const response = await api.post<Category>(
+      "/products-admin/categories/", 
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
     return response.data;
   },
 };

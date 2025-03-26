@@ -6,10 +6,14 @@ import "./TestModeBanner.scss";
 
 interface TestModeBannerProps {
   text?: string;
+  permanentDisplay?: boolean; // Если true, будет игнорировать проверку на админку
+  additionalClasses?: string; // Дополнительные CSS классы
 }
 
 const TestModeBanner: React.FC<TestModeBannerProps> = ({
   text = "Сайт работает в тестовом режиме! Заказы принимаются только по телефону или в Telegram.",
+  permanentDisplay = false,
+  additionalClasses = "",
 }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -17,8 +21,8 @@ const TestModeBanner: React.FC<TestModeBannerProps> = ({
   // Check if we're in the admin panel
   const isAdminPanel = pathname.startsWith('/admin');
   
-  // If in admin panel, don't render the banner
-  if (isAdminPanel) {
+  // If in admin panel and not forced to display, don't render the banner
+  if (isAdminPanel && !permanentDisplay) {
     return null;
   }
 
@@ -45,10 +49,10 @@ const TestModeBanner: React.FC<TestModeBannerProps> = ({
         wrapper.appendChild(clone);
       }
     }
-  }, []);
+  }, [text]);
 
   return (
-    <div className="test-mode-banner" ref={bannerRef}>
+    <div className={`test-mode-banner ${additionalClasses}`} ref={bannerRef}>
       <div className="banner-wrapper">
         <div className="banner-content">{text}</div>
       </div>

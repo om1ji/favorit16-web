@@ -23,6 +23,8 @@ import TestModeBanner from "@/components/ui/TestModeBanner";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showCategoriesNav, setShowCategoriesNav] = useState(true);
+  
   const { data: siteInfo } = useSiteInfo();
   const user = useSelector(selectUser);
   const pathname = usePathname();
@@ -33,14 +35,7 @@ export default function Header() {
   // Check if we're in the admin panel
   const isAdminPanel = pathname.startsWith('/admin');
   
-  // If in admin panel, don't render the header
-  if (isAdminPanel) {
-    return null;
-  }
-
   // Определяем, на каких страницах показывать навбар категорий
-  const [showCategoriesNav, setShowCategoriesNav] = useState(true);
-
   useEffect(() => {
     const pagesToShowNav = ["/", "/catalog", "/product"];
     const shouldShow = pagesToShowNav.some(
@@ -96,8 +91,9 @@ export default function Header() {
     },
   };
 
-  // Определяем URL для админ-ссылки
-  const adminUrl = user?.is_staff ? "/admin" : "/login?redirect=/admin";
+  if (isAdminPanel) {
+    return null;
+  }
 
   return (
     <>

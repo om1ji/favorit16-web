@@ -10,7 +10,6 @@ import {
 } from "@/redux/features/authSlice";
 import { AppDispatch } from "@/redux/store";
 import Sidebar from "@/components/admin/Sidebar";
-import Header from "@/components/admin/Header";
 import { authAPI } from "@/services/api";
 import "./admin.scss";
 
@@ -39,7 +38,6 @@ export default function AdminLayout({
           router.push("/");
         }
       } catch (error) {
-        console.error("Ошибка авторизации:", error);
         router.push("/login?redirect=" + encodeURIComponent(pathname));
       } finally {
         setLoading(false);
@@ -53,7 +51,6 @@ export default function AdminLayout({
     const checkAuth = async () => {
       try {
         if (redirectInProgress) {
-          console.log("Redirect already in progress, skipping auth check");
           return;
         }
 
@@ -122,34 +119,34 @@ export default function AdminLayout({
     }
   }, [user, loading, router, redirectInProgress]);
 
-  if (loading) {
-    return (
-      <div className="admin-loading">
-        <div className="spinner"></div>
-        <p>Проверка авторизации...</p>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="admin-loading">
+  //       <div className="spinner"></div>
+  //       <p>Проверка авторизации...</p>
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return <div className="error">{error}</div>;
   }
 
-  if (!user) {
-    return <div className="loading">Проверка авторизации...</div>;
-  }
+  // if (!user) {
+  //   return <div className="loading">Проверка авторизации...</div>;
+  // }
 
-  if (isAuthorized === null) {
-    return <div className="loading">Проверка прав доступа...</div>;
-  }
+  // if (isAuthorized === null) {
+  //   return <div className="loading">Проверка прав доступа...</div>;
+  // }
 
-  if (isAuthorized === false) {
-    return (
-      <div className="loading">
-        У вас нет прав для доступа к этой странице. Переадресация...
-      </div>
-    );
-  }
+  // if (isAuthorized === false) {
+  //   return (
+  //     <div className="loading">
+  //       У вас нет прав для доступа к этой странице. Переадресация...
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="admin-layout">
