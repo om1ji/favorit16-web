@@ -16,6 +16,7 @@ import ProductImageCarousel from "@/components/product/ProductImageCarousel";
 import TestModeAlert from "@/components/ui/TestModeAlert";
 import { defaultConfig } from "@/lib/config/default-config";
 import "./styles.scss";
+import Image from "next/image";
 
 interface Props {
   params: Promise<{
@@ -191,7 +192,7 @@ export default function ProductPage({ params }: Props) {
                 >
                   <div className="aspect-square relative overflow-hidden rounded-lg bg-gray-100 mb-4">
                     {relatedProduct.feature_image ? (
-                      <img
+                      <Image
                         src={relatedProduct.feature_image.image}
                         alt={
                           relatedProduct.feature_image.alt_text ||
@@ -200,7 +201,7 @@ export default function ProductPage({ params }: Props) {
                         className="object-contain w-full h-full group-hover:opacity-75 transition-opacity"
                       />
                     ) : relatedProduct.images?.[0] ? (
-                      <img
+                      <Image
                         src={relatedProduct.images[0].image}
                         alt={
                           relatedProduct.images[0].alt_text ||

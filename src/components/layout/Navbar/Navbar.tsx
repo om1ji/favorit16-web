@@ -88,9 +88,6 @@ const Navbar = () => {
         </div>
 
         <div className="nav-actions">
-          <Link href="/cart" className="nav-link">
-            Корзина
-          </Link>
           <Link href="/profile" className="nav-link">
             Профиль
           </Link>

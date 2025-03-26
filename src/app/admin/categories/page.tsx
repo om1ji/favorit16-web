@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { adminAPI } from "@/services/api";
 import Link from "next/link";
 import {
   MagnifyingGlassIcon,
@@ -11,19 +11,17 @@ import {
   XMarkIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
-import { adminAPI } from "@/services/api";
 import "../admin.scss";
 import "./categories.scss";
 import axios from "axios";
 import { Category } from "@/types/product";
+import Image from "next/image";
 
 const CategoriesPage = () => {
-  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [totalCategories, setTotalCategories] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -32,47 +30,38 @@ const CategoriesPage = () => {
 
   const PAGE_SIZE = 20;
 
-  const fetchCategories = async (page = 1, search = searchTerm) => {
-    setLoading(true);
+  const fetchCategories = async () => {
     try {
+      setLoading(true);
+      setError(null);
+
       const params: Record<string, string> = {
-        page: page.toString(),
+        page: currentPage.toString(),
         page_size: PAGE_SIZE.toString(),
       };
 
-      if (search) {
-        params.search = search;
+      if (searchTerm) {
+        params.search = searchTerm;
       }
 
       const response = await adminAPI.getCategories(params);
       setCategories(response.results);
-      setTotalCategories(response.count);
       setTotalPages(Math.ceil(response.count / PAGE_SIZE));
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        if (err.response?.status === 401) {
-          setError("Необходима авторизация. Пожалуйста, войдите в систему.");
-        } else if (err.response?.status === 403) {
-          setError("У вас нет прав для просмотра списка категорий.");
-        } else {
-          setError(`Произошла ошибка при загрузке категорий: ${err.message}`);
-        }
-      } else {
-        setError("Произошла неизвестная ошибка при загрузке категорий.");
-      }
+    } catch (error) {
+      console.error("Ошибка при загрузке категорий:", error);
+      setError("Не удалось загрузить категории. Попробуйте позже.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCategories(currentPage);
-  }, [currentPage]);
+    fetchCategories();
+  }, [currentPage, searchTerm]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
     setCurrentPage(1);
-    fetchCategories(1, searchTerm);
   };
 
   const handleDeleteClick = (categoryId: string) => {
@@ -91,8 +80,7 @@ const CategoriesPage = () => {
     setDeleteLoading(true);
     try {
       await adminAPI.deleteCategory(deleteConfirm);
-      // Обновляем список после успешного удаления
-      fetchCategories(currentPage);
+      fetchCategories();
       setDeleteConfirm(null);
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -120,6 +108,9 @@ const CategoriesPage = () => {
   };
 
   const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages || page === currentPage) {
+      return;
+    }
     setCurrentPage(page);
   };
 
@@ -127,12 +118,37 @@ const CategoriesPage = () => {
     if (totalPages <= 1) return null;
 
     const pages = [];
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    const maxPagesToShow = 5;
+    
+    // Calculate optimal start and end page for pagination
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    const endPageInitial = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    
+    // Adjust startPage if we're near the end
+    if (endPageInitial - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPageInitial - maxPagesToShow + 1);
+    }
+    
+    const endPage = endPageInitial;
 
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    // Add first page if not visible
+    if (startPage > 1) {
+      pages.push(
+        <button
+          key="1"
+          onClick={() => handlePageChange(1)}
+          className="pagination-button"
+        >
+          1
+        </button>
+      );
+      if (startPage > 2) {
+        pages.push(
+          <span key="start-ellipsis" className="pagination-ellipsis">
+            ...
+          </span>
+        );
+      }
     }
 
     for (let i = startPage; i <= endPage; i++) {
@@ -147,6 +163,25 @@ const CategoriesPage = () => {
       );
     }
 
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pages.push(
+          <span key="end-ellipsis" className="pagination-ellipsis">
+            ...
+          </span>
+        );
+      }
+      pages.push(
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          className="pagination-item"
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
     return (
       <div className="admin-pagination">
         <button
@@ -156,31 +191,7 @@ const CategoriesPage = () => {
         >
           &larr;
         </button>
-        {startPage > 1 && (
-          <>
-            <button
-              onClick={() => handlePageChange(1)}
-              className="pagination-item"
-            >
-              1
-            </button>
-            {startPage > 2 && <span className="pagination-ellipsis">...</span>}
-          </>
-        )}
         {pages}
-        {endPage < totalPages && (
-          <>
-            {endPage < totalPages - 1 && (
-              <span className="pagination-ellipsis">...</span>
-            )}
-            <button
-              onClick={() => handlePageChange(totalPages)}
-              className="pagination-item"
-            >
-              {totalPages}
-            </button>
-          </>
-        )}
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
@@ -203,19 +214,32 @@ const CategoriesPage = () => {
       </div>
 
       <div className="admin-filters">
-        <form onSubmit={handleSearch} className="search-form">
+        <form onSubmit={(e) => e.preventDefault()} className="search-form">
           <div className="search-input-container">
             <input
               type="text"
               placeholder="Поиск категорий..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
               className="search-input"
             />
-            <button type="submit" className="search-button">
-              <MagnifyingGlassIcon className="icon" />
-            </button>
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchTerm("");
+                  fetchCategories();
+                }}
+                className="reset-search"
+              >
+                <XMarkIcon className="h-4 w-4" />
+              </button>
+            )}
           </div>
+          <button type="submit" className="search-button">
+            <MagnifyingGlassIcon className="h-5 w-5" />
+            <span>Поиск</span>
+          </button>
         </form>
       </div>
 
@@ -236,7 +260,7 @@ const CategoriesPage = () => {
               <button
                 onClick={() => {
                   setSearchTerm("");
-                  fetchCategories(1, "");
+                  fetchCategories();
                 }}
                 className="reset-search"
               >
@@ -260,7 +284,7 @@ const CategoriesPage = () => {
                     <div className="name-content">
                       {category.image && (
                         <div className="category-image">
-                          <img src={category.image} alt={category.name} />
+                          <Image src={category.image} alt={category.name} width={100} height={100} />
                         </div>
                       )}
                       <span>{category.name}</span>

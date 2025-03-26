@@ -2,6 +2,8 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function AboutPage() {
   const handleImageError = (
@@ -36,7 +38,7 @@ export default function AboutPage() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="relative h-80 md:h-full rounded-lg overflow-hidden shadow-lg bg-gray-100">
-              <img
+              <Image
                 src="https://via.placeholder.com/800x600?text=Favorit116"
                 alt="Favorit116"
                 className="w-full h-full object-cover"
@@ -172,11 +174,13 @@ export default function AboutPage() {
                 className="bg-white rounded-lg shadow-md overflow-hidden"
               >
                 <div className="relative h-64 w-full bg-gray-100">
-                  <img
+                  <Image
                     src={member.image}
                     alt={member.name}
                     className="w-full h-full object-cover"
                     onError={handleImageError}
+                    width={400}
+                    height={400}
                   />
                 </div>
                 <div className="p-6">
@@ -317,12 +321,12 @@ export default function AboutPage() {
             Посетите наш каталог, чтобы найти лучшие предложения на электронику
             и аксессуары.
           </p>
-          <a
+          <Link
             href="/catalog"
             className="inline-block bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-blue-50 transition duration-300"
           >
             Перейти в каталог
-          </a>
+          </Link>
         </motion.div>
       </div>
     </div>

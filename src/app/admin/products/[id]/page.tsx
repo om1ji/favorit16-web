@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
 import ProductForm from "../components/ProductForm";
 import { adminAPI } from "@/services/api";
 
@@ -58,7 +57,13 @@ const EditProductPage = ({ params }: Props) => {
           description: data.description,
           in_stock: data.in_stock,
           quantity: data.quantity,
-          images: data.images.map((img: any) => ({
+          images: data.images.map((img: {
+            id: string;
+            image: string;
+            thumbnail: string;
+            alt_text: string;
+            is_feature: boolean;
+          }) => ({
             id: img.id,
             url: img.image,
             thumbnail: img.thumbnail,

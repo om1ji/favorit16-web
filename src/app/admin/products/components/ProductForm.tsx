@@ -71,7 +71,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         if (Array.isArray(data)) {
           categoriesData = data as AdminCategory[];
         } else if (data && typeof data === "object") {
-          const objData = data as Record<string, any>;
+          const objData = data as Record<string, unknown>;
           categoriesData = (objData.results ||
             objData.categories ||
             objData.data ||
@@ -228,7 +228,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     try {
       // Create a JSON object for the entire payload
-      const jsonData: Record<string, any> = {
+      const jsonData: Record<string, unknown> = {
         name: formData.name,
         category: formData.category_id,
         price: Number(formData.price).toFixed(2),
@@ -259,11 +259,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
       }
 
       router.push("/admin/products");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving product:", error);
-      if (error.response?.data) {
+      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response) {
         console.log("Error response data:", error.response.data);
-        setErrors(error.response.data);
+        setErrors(error.response.data as Record<string, string>);
       } else {
         setErrors({ submit: "Failed to save product" });
       }

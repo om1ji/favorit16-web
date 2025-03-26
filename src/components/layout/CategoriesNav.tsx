@@ -12,6 +12,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import useCategoryBrands from "@/hooks/useCategoryBrands";
 import "./CategoriesNav.scss";
+import Image from "next/image";
 
 const CategoriesNav = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -109,7 +110,7 @@ const CategoriesNav = () => {
                           >
                             {brand.logo ? (
                               <span className="brand-logo">
-                                <img
+                                <Image
                                   src={brand.logo}
                                   alt={brand.name}
                                   width={20}

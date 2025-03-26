@@ -79,7 +79,7 @@ api.interceptors.response.use(
           return api(originalRequest);
         } catch (authRefreshError) {
           console.log(
-            "Admin API: Auth refresh failed, trying users/refresh endpoint",
+            "Admin API: Auth refresh failed, trying users/refresh endpoint. ", authRefreshError
           );
 
           // If that fails, try the custom endpoint
@@ -292,7 +292,7 @@ export const adminAPI = {
   },
 
   // Обновление категории с использованием JSON
-  updateCategoryJson: async (id: string, data: any) => {
+  updateCategoryJson: async (id: string, data: Record<string, unknown>) => {
     console.log("Updating category with ID using JSON:", id);
     console.log("JSON data being sent:", data);
     
@@ -341,7 +341,7 @@ export const adminAPI = {
   },
   
   // Обновление продукта с JSON данными
-  updateProductJson: async (id: string, data: any) => {
+  updateProductJson: async (id: string, data: Record<string, unknown>) => {
     console.log("Updating product with ID using JSON:", id);
     console.log("JSON data being sent:", data);
     
@@ -368,7 +368,7 @@ export const adminAPI = {
   },
   
   // Создание нового продукта с JSON данными
-  createProductJson: async (data: any) => {
+  createProductJson: async (data: Record<string, unknown>) => {
     console.log("Creating product with JSON data:", data);
     
     const response = await api.post<AdminProduct>(
@@ -420,7 +420,7 @@ export const adminAPI = {
   },
 
   // Создание новой категории с использованием JSON
-  createCategoryJson: async (data: any) => {
+  createCategoryJson: async (data: Record<string, unknown>) => {
     console.log("Creating category with JSON data:", data);
     
     const response = await api.post<Category>(

@@ -48,6 +48,7 @@ export default function ContactsPage() {
         setFormMessage(result.message);
       }
     } catch (error) {
+      console.log("Error submitting contact form:", error);
       setFormStatus("error");
       setFormMessage(
         "Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте позже.",

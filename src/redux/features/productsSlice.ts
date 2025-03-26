@@ -4,10 +4,7 @@ import {
   Category,
   Brand,
   ProductFilters,
-  CategoryListResponse,
-  BrandListResponse,
 } from "@/types/api";
-import { getCategories, getProducts, getProduct, getBrands } from "@/lib/api";
 import { RootState } from "../store";
 import { AxiosError } from "axios";
 import api from "@/lib/api";

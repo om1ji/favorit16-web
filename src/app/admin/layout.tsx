@@ -38,6 +38,7 @@ export default function AdminLayout({
           router.push("/");
         }
       } catch (error) {
+        console.error(error);
         router.push("/login?redirect=" + encodeURIComponent(pathname));
       } finally {
         setLoading(false);

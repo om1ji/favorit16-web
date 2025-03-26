@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import TestModeAlert from "@/components/ui/TestModeAlert";
 import "./Product.scss";
 import { defaultConfig } from "@/lib/config/default-config";
+import Image from "next/image";
 
 interface ProductProps {
   product: {
@@ -25,7 +25,6 @@ interface ProductProps {
 }
 
 const Product: React.FC<ProductProps> = ({ product }) => {
-  const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
@@ -94,7 +93,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
           {/* Галерея изображений */}
           <div className="product-gallery">
             <div className="main-image">
-              <img src={gallery[selectedImage]} alt={product.title} />
+              <Image src={gallery[selectedImage]} alt={product.title} />
               {product.discount && (
                 <span className="discount-badge">−{product.discount}%</span>
               )}
@@ -106,7 +105,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
                   className={`thumbnail ${selectedImage === index ? "active" : ""}`}
                   onClick={() => setSelectedImage(index)}
                 >
-                  <img src={image} alt={`${product.title} ${index + 1}`} />
+                  <Image src={image} alt={`${product.title} ${index + 1}`} />
                 </button>
               ))}
             </div>
@@ -170,7 +169,6 @@ const Product: React.FC<ProductProps> = ({ product }) => {
               <button className="add-to-cart-btn" onClick={handleAddToCart}>
                 Купить
               </button>
-              <button className="add-to-favorites-btn">♡</button>
             </div>
 
             <div className="product-description">

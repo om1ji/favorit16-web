@@ -104,7 +104,7 @@ api.interceptors.response.use(
 
             return api(originalRequest);
           } catch (authRefreshError) {
-            console.log("Auth refresh failed, trying users/refresh endpoint");
+            console.log("Auth refresh failed, trying users/refresh endpoint", authRefreshError);
 
             // Если первый путь не сработал, попробуем через /users/refresh/
             const response = await axios.post(

@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { ordersAPI } from "@/services/api";
 import "./OrderList.scss";
+import Image from "next/image";
 
 interface OrderItem {
   id: string;
@@ -111,7 +112,12 @@ const OrderList = () => {
             {order.items.map((item) => (
               <div key={item.id} className="order-item">
                 <div className="item-image">
-                  <img src={item.product.image} alt={item.product.name} />
+                  <Image
+                    src={item.product.image}
+                    alt={item.product.name}
+                    width={100}
+                    height={100}
+                  />
                 </div>
                 <div className="item-info">
                   <h3>{item.product.name}</h3>

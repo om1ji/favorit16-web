@@ -6,8 +6,6 @@ import { AppDispatch } from "@/redux/store";
 import {
   fetchBrands,
   selectBrands,
-  selectLoading,
-  setCurrentFilters,
 } from "@/redux/features/productsSlice";
 import { Brand } from "@/types/api";
 import "./TireFilters.scss";
@@ -26,7 +24,6 @@ interface FilterState {
 const TireFilters: React.FC<TireFiltersProps> = ({ onFilterChange }) => {
   const dispatch = useDispatch<AppDispatch>();
   const brands = useSelector(selectBrands);
-  const loading = useSelector(selectLoading);
 
   const [selectedWidth, setSelectedWidth] = useState<string>("");
   const [selectedProfile, setSelectedProfile] = useState<string>("");

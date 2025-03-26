@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Bars3Icon, XMarkIcon, UserIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { useSiteInfo } from "@/hooks/useConfig";
@@ -22,11 +22,9 @@ import TestModeBanner from "@/components/ui/TestModeBanner";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [showCategoriesNav, setShowCategoriesNav] = useState(true);
   
   const { data: siteInfo } = useSiteInfo();
-  const user = useSelector(selectUser);
   const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
   const categories = useSelector(selectCategories);
@@ -54,18 +52,18 @@ export default function Header() {
     }
   }, [dispatch, categories.length, categoriesLoading]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (window.scrollY > 20) {
+  //       setScrolled(true);
+  //     } else {
+  //       setScrolled(false);
+  //     }
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 

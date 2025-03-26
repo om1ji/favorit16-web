@@ -17,7 +17,7 @@ import {
 import { Product } from "@/types/api";
 import Link from "next/link";
 import "@/app/catalog/catalog.scss";
-import api from "@/lib/api";
+import Image from "next/image";
 
 interface Props {
   params: Promise<{
@@ -110,14 +110,18 @@ export default function CategoryPage({ params }: Props) {
               <div className="product-card">
                 <div className="product-image">
                   {product.feature_image ? (
-                    <img
+                    <Image
                       src={product.feature_image.image}
                       alt={product.feature_image.alt_text || product.name}
+                      width={100}
+                      height={100}
                     />
                   ) : product.images?.length > 0 ? (
-                    <img
+                    <Image
                       src={product.images[0].image}
                       alt={product.images[0].alt_text || product.name}
+                      width={100}
+                      height={100}
                     />
                   ) : null}
                 </div>

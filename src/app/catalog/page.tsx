@@ -18,13 +18,20 @@ import { Product, ProductFilters } from "@/types/api";
 import Link from "next/link";
 import TireFilters from "@/components/filters/TireFilters";
 import "./catalog.scss";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface CatalogPageProps {
   initialCategorySlug?: string;
 }
 
-const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
+export default function CatalogPage({ params }: { params?: { slug?: string } }) {
+  const initialCategorySlug = params?.slug;
+  
+  return <CatalogPageContent initialCategorySlug={initialCategorySlug} />;
+}
+
+const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector(selectProducts);
   const categories = useSelector(selectCategories);
@@ -33,7 +40,6 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
   const totalCount = useSelector(selectTotalProducts);
   const currentPage = useSelector(selectCurrentPage);
   const [activeFilters, setActiveFilters] = useState<ProductFilters>({});
-  const [showAlert, setShowAlert] = useState(false);
   const router = useRouter();
 
   const fetchingProducts = useRef(false);
@@ -208,29 +214,6 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
     router.push(newPath);
   };
 
-  const handleCategoryChange = (categorySlug: string) => {
-    prevTireFilters.current = {
-      width: undefined,
-      profile: undefined,
-      diameter: undefined,
-      brand: undefined,
-    };
-
-    const newFilters = {
-      ...activeFilters,
-      category: categorySlug,
-      width: undefined,
-      profile: undefined,
-      diameter: undefined,
-      brand: undefined,
-    };
-
-    setActiveFilters(newFilters);
-    filtersChanged.current = true;
-    dispatch(setCurrentPage(1));
-    updateURL(newFilters, 1);
-  };
-
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (!initialCategorySlug) return;
     const newFilters = {
@@ -296,9 +279,11 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
               >
                 <div className="category-image">
                   {category.image ? (
-                    <img
+                    <Image
                       src={category.image}
                       alt={category.name}
+                      width={100}
+                      height={100}
                       loading="lazy"
                     />
                   ) : (
@@ -314,10 +299,6 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
         </div>
       </div>
     );
-  };
-
-  const handleBuyClick = () => {
-    setShowAlert(true);
   };
 
   const renderProductsList = () => {
@@ -361,16 +342,20 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
                 <div className="product-card">
                   <div className="product-image">
                     {product.feature_image ? (
-                      <img
+                      <Image
                         src={product.feature_image.image}
                         alt={product.feature_image.alt_text || product.name}
                         loading="lazy"
+                        width={100}
+                        height={100}
                       />
                     ) : product.images?.length > 0 ? (
-                      <img
+                      <Image
                         src={product.images[0].image}
                         alt={product.images[0].alt_text || product.name}
                         loading="lazy"
+                        width={100}
+                        height={100}
                       />
                     ) : null}
                   </div>
@@ -400,12 +385,7 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
                     {!product.in_stock ? (
                       <div className="out-of-stock">Нет в наличии</div>
                     ) : (
-                      <button
-                        className="add-to-cart"
-                        onClick={(e) => {
-                          handleBuyClick();
-                        }}
-                      >
+                      <button>
                         Купить
                       </button>
                     )}
@@ -464,5 +444,3 @@ const CatalogPage = ({ initialCategorySlug }: CatalogPageProps = {}) => {
     </div>
   );
 };
-
-export default CatalogPage;

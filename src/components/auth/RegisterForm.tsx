@@ -38,6 +38,7 @@ const RegisterForm = () => {
       await dispatch(register(formData)).unwrap();
       router.push("/");
     } catch (error) {
+      console.error(error);
       // Ошибка уже обработана в slice
     }
   };

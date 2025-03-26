@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import "./TestModeBanner.scss";
+import Marquee from "react-fast-marquee";
 
 interface TestModeBannerProps {
   text?: string;
@@ -11,52 +12,42 @@ interface TestModeBannerProps {
 }
 
 const TestModeBanner: React.FC<TestModeBannerProps> = ({
-  text = "Сайт работает в тестовом режиме! Заказы принимаются только по телефону или в Telegram.",
+  text = "Тестовый режим работы! Заказы временно не принимаются.",
   permanentDisplay = false,
   additionalClasses = "",
 }) => {
-  const bannerRef = useRef<HTMLDivElement>(null);
+  const [animate, setAnimate] = useState(true);
   const pathname = usePathname();
-  
-  // Check if we're in the admin panel
   const isAdminPanel = pathname.startsWith('/admin');
-  
-  // If in admin panel and not forced to display, don't render the banner
+
+  // Always call hooks at the top level, before any conditional returns
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setAnimate((prev) => !prev);
+    }, 15000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [text]);
+
+  // Skip rendering for admin panel unless permanentDisplay is true
   if (isAdminPanel && !permanentDisplay) {
     return null;
   }
 
-  useEffect(() => {
-    const banner = bannerRef.current;
-    if (!banner) return;
-
-    // Дублируем текст для создания эффекта непрерывной прокрутки
-    const content = banner.querySelector(".banner-content");
-    if (!content) return;
-
-    // Проверяем, достаточно ли текста для анимации
-    const wrapper = banner.querySelector(".banner-wrapper");
-    if (!wrapper) return;
-
-    const contentWidth = content.clientWidth;
-    const wrapperWidth = wrapper.clientWidth;
-
-    // Если контент короче чем контейнер, дублируем его для плавной прокрутки
-    if (contentWidth < wrapperWidth * 2) {
-      const cloneCount = Math.ceil((wrapperWidth * 2) / contentWidth);
-      for (let i = 0; i < cloneCount; i++) {
-        const clone = content.cloneNode(true);
-        wrapper.appendChild(clone);
-      }
-    }
-  }, [text]);
+  // Define scrollText outside conditional rendering
+  const scrollText = `${text} ${text}`;
 
   return (
-    <div className={`test-mode-banner ${additionalClasses}`} ref={bannerRef}>
-      <div className="banner-wrapper">
-        <div className="banner-content">{text}</div>
-      </div>
-    </div>
+    <Marquee
+        className={`bg-blue-100 text-blue-600 py-2 overflow-hidden relative border-2 border-red-400 ${additionalClasses}`}
+        style={{
+          zIndex: 1000,
+        }}
+    >
+        {scrollText}
+    </Marquee>
   );
 };
 

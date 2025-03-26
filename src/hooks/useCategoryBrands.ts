@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Brand, Category } from "@/types/api";
 import api from "@/lib/api";
-import { useSelector } from "react-redux";
-import { selectCategories } from "@/redux/features/productsSlice";
 
 interface BrandInfo {
   id: string;
@@ -20,7 +17,6 @@ const useCategoryBrands = (categoryIdOrSlug?: string) => {
   const [brands, setBrands] = useState<BrandInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const categories = useSelector(selectCategories);
 
   // Используем ref для отслеживания статуса запроса
   const isFetching = useRef(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface TestModeAlertProps {

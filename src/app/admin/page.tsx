@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import {
@@ -14,7 +13,6 @@ import {
 import {
   CurrencyDollarIcon,
   ShoppingCartIcon,
-  UsersIcon,
   CubeIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
@@ -52,7 +50,6 @@ const statsCards = [
 ];
 
 const AdminDashboard = () => {
-  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const dashboardData = useSelector(selectDashboardData);
   const loading = useSelector(selectDashboardLoading);

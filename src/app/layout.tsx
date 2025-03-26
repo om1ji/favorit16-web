@@ -3,12 +3,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getMe } from "@/redux/features/authSlice";
-import { fetchCart } from "@/redux/features/cartSlice";
 import { Inter } from "next/font/google";
 import RootLayout from "@/components/layout/RootLayout";
 import { Providers } from "./providers";
 import "./globals.css";
-import type { Metadata } from "next";
 import { usePathname } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
@@ -60,8 +58,8 @@ function AppContent({ children }: { children: React.ReactNode }) {
         if (accessToken) {
           try {
             await dispatch(getMe() as any);
-            await dispatch(fetchCart() as any);
           } catch (error) {
+            console.error(error);
 
             if (refreshToken) {
               try {
@@ -80,7 +78,6 @@ function AppContent({ children }: { children: React.ReactNode }) {
                   localStorage.setItem("access_token", data.access);
 
                   await dispatch(getMe() as any);
-                  await dispatch(fetchCart() as any);
                 } else {
 
                   const isProtectedPage =
@@ -93,6 +90,8 @@ function AppContent({ children }: { children: React.ReactNode }) {
                   }
                 }
               } catch (refreshError) {
+                console.error(refreshError);
+
                 const isProtectedPage =
                   pathname?.startsWith("/admin") ||
                   pathname?.startsWith("/profile");

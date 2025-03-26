@@ -11,6 +11,7 @@ import { adminAPI } from "@/services/api";
 import "./products.scss";
 import axios from "axios";
 import { AdminProduct } from "@/types/product";
+import Image from "next/image";
 import { getImageUrl } from "@/utils/imageUtils";
 
 const ProductsPage = () => {
@@ -211,9 +212,11 @@ const ProductsPage = () => {
                 <tr key={product.id}>
                   <td className="product-image">
                     {product.images?.length > 0 && (
-                      <img
+                      <Image
                         src={getImageUrl(product.images[0].thumbnail)}
                         alt={product.images[0].alt_text}
+                        width={100}
+                        height={100}
                       />
                     )}
                   </td>

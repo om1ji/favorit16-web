@@ -1,16 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectUser } from "@/redux/features/authSlice";
+import React from "react";
 import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute";
 import ProfileSidebar from "../components/ProfileSidebar";
 import OrderList from "./components/OrderList";
 import "./orders.scss";
 
 const OrdersPage = () => {
-  const user = useSelector(selectUser);
-
   return (
     <ProtectedRoute>
       <div className="profile-page">

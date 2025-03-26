@@ -1,13 +1,6 @@
 "use client";
 
 import React, { use } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import {
-  fetchCategories,
-  selectCategories,
-  selectLoading,
-} from "@/redux/features/productsSlice";
 import CatalogPage from "../page";
 
 interface Props {
@@ -22,5 +15,5 @@ export default function CategoryPage({ params }: Props) {
   const { slug } = resolvedParams;
 
   // Передаем slug категории в CatalogPage в качестве initialCategorySlug
-  return <CatalogPage initialCategorySlug={slug} />;
+  return <CatalogPage params={{ slug }} />;
 }

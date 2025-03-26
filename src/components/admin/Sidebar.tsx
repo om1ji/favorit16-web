@@ -7,9 +7,6 @@ import {
   HomeIcon,
   CubeIcon,
   TagIcon,
-  UserGroupIcon,
-  ShoppingCartIcon,
-  Cog6ToothIcon,
   ArrowLeftCircleIcon,
 } from "@heroicons/react/24/outline";
 import "./Sidebar.scss";

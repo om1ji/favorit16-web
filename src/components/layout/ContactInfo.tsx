@@ -5,8 +5,6 @@ import { useContactInfo } from "@/hooks/useConfig";
 import {
   PhoneIcon,
   EnvelopeIcon,
-  MapPinIcon,
-  ClockIcon,
 } from "@heroicons/react/24/outline";
 
 interface ContactInfoProps {

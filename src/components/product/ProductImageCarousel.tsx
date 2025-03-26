@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ProductImage } from "@/types/api";
+import Image from "next/image";
 
 interface ProductImageCarouselProps {
   images: ProductImage[];
@@ -25,7 +26,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   return (
     <div className="product-image-container">
       <div className="main-image-wrapper">
-        <img
+        <Image
           src={images[0].image}
           alt={images[0].alt_text || productName}
           className="main-image"

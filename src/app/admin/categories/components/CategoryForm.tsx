@@ -6,6 +6,7 @@ import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { adminAPI } from "@/services/api";
 import { Category } from "@/types/product";
 import "./CategoryForm.scss";
+import Image from "next/image";
 
 interface FormCategory extends Omit<Category, "children"> {
   children?: string[];
@@ -35,7 +36,6 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   });
 
   // Track the uploaded image state
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadedImageId, setUploadedImageId] = useState<string | null>(null);
 
@@ -83,7 +83,6 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      setImageFile(file);
 
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
@@ -115,7 +114,6 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   };
 
   const handleRemoveImage = () => {
-    setImageFile(null);
     setPreviewUrl(null);
     setFormData((prev) => ({ ...prev, image: null }));
     setUploadedImageId(null);
@@ -147,7 +145,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
     try {
       // Create JSON data object instead of FormData
-      const jsonData: Record<string, any> = {
+      const jsonData: Record<string, string | null | boolean | number> = {
         name: formData.name
       };
 
@@ -228,7 +226,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           <div className="image-upload-container">
             {previewUrl ? (
               <div className="image-preview">
-                <img src={previewUrl} alt="Превью" className="preview-image" />
+                <Image src={previewUrl} alt="Превью" className="preview-image" />
                 <button
                   type="button"
                   className="remove-image"
