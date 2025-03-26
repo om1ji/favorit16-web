@@ -20,6 +20,7 @@ import TireFilters from "@/components/filters/TireFilters";
 import "./catalog.scss";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import ProductCard from "@/components/product/ProductCard";
 
 interface CatalogPageProps {
   initialCategorySlug?: string;
@@ -292,7 +293,7 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
                     </div>
                   )}
                 </div>
-                <h3 className="category-name">{category.name}</h3>
+                <h3 className="category-name" style={{ color: "#fff" }}>{category.name}</h3>
               </Link>
             </div>
           ))}
@@ -304,11 +305,10 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
   const renderProductsList = () => {
     return (
       <div className="products-section">
-        <div className="catalog-header">
+        <div className="catalog-header mb-6">
           <div className="sorting-container">
             <select
-              className="sort-select"
-              style={{ color: "black" }}
+              className="sort-select bg-white border border-gray-300 rounded px-4 py-2 text-gray-700"
               onChange={handleSortChange}
               value={activeFilters.ordering || ""}
             >
@@ -321,87 +321,40 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
           </div>
         </div>
 
-        <div className="products-grid">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.length === 0 ? (
-            <div className="no-products">
-              <p>
+            <div className="col-span-full bg-gray-50 rounded-lg p-8 text-center">
+              <p className="text-gray-600">
                 Товары не найдены. Попробуйте изменить параметры фильтрации.
               </p>
             </div>
           ) : (
-            products.map((product: Product) => (
-              <Link
-                href={
-                  product.slug
-                    ? `/product/${product.slug}`
-                    : `/product/${product.id}`
-                }
+            products.map((product: Product, index: number) => (
+              <ProductCard 
                 key={product.id}
-                className="product-card-link"
-              >
-                <div className="product-card">
-                  <div className="product-image">
-                    {product.feature_image ? (
-                      <Image
-                        src={product.feature_image.image}
-                        alt={product.feature_image.alt_text || product.name}
-                        loading="lazy"
-                        width={100}
-                        height={100}
-                      />
-                    ) : product.images?.length > 0 ? (
-                      <Image
-                        src={product.images[0].image}
-                        alt={product.images[0].alt_text || product.name}
-                        loading="lazy"
-                        width={100}
-                        height={100}
-                      />
-                    ) : null}
-                  </div>
-                  <div className="product-info">
-                    <h3>{product.name}</h3>
-                    <div className="product-details">
-                      <div className="product-category">
-                        {product.category.name}
-                      </div>
-                      {product.tire_size && (
-                        <div className="product-tire-size">
-                          {product.tire_size}
-                        </div>
-                      )}
-                      {product.brand && (
-                        <div className="product-brand">
-                          {product.brand.name}
-                        </div>
-                      )}
-                    </div>
-                    <div className="product-price">
-                      {product.old_price && (
-                        <span className="old-price">{product.old_price} ₽</span>
-                      )}
-                      <span className="current-price">{product.price} ₽</span>
-                    </div>
-                    {!product.in_stock ? (
-                      <div className="out-of-stock">Нет в наличии</div>
-                    ) : (
-                      <button>
-                        Купить
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </Link>
+                product={product} 
+                index={index} 
+                showPrice={true} 
+                showBuyButton={true} 
+                onBuyClick={() => {
+                  // Здесь можно добавить логику для кнопки "Купить"
+                  console.log("Buy button clicked for", product.name);
+                }}
+              />
             ))
           )}
         </div>
 
         {totalCount > 10 && (
-          <div className="pagination">
+          <div className="flex justify-center mt-8 space-x-2">
             {Array.from({ length: Math.ceil(totalCount / 10) }, (_, i) => (
               <button
                 key={i + 1}
-                className={currentPage === i + 1 ? "active" : ""}
+                className={`w-10 h-10 rounded flex items-center justify-center transition-colors ${
+                  currentPage === i + 1 
+                    ? "bg-blue-600 text-white" 
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                }`}
                 onClick={() => handlePageChange(i + 1)}
               >
                 {i + 1}

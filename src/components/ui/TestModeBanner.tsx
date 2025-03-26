@@ -41,7 +41,7 @@ const TestModeBanner: React.FC<TestModeBannerProps> = ({
 
   return (
     <Marquee
-        className={`bg-blue-100 text-blue-600 py-2 overflow-hidden relative border-2 border-red-400 ${additionalClasses}`}
+        className={`bg-yellow-100 text-yellow-600 py-2 overflow-hidden relative ${additionalClasses}`}
         style={{
           zIndex: 1000,
         }}

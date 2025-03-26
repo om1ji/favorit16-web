@@ -284,7 +284,13 @@ const CategoriesPage = () => {
                     <div className="name-content">
                       {category.image && (
                         <div className="category-image">
-                          <Image src={category.image} alt={category.name} width={100} height={100} />
+                          <Image 
+                            src={category.image} 
+                            alt={category.name} 
+                            width={100} 
+                            height={100}
+                            style={{ objectFit: 'cover' }}
+                          />
                         </div>
                       )}
                       <span>{category.name}</span>

@@ -13,6 +13,10 @@ interface ProductFormData {
   description: string;
   in_stock: boolean;
   quantity: number;
+  brand_id: string;
+  diameter: number;
+  width: number;
+  profile: number;
   images: Array<{
     id: string;
     url: string;
@@ -57,6 +61,10 @@ const EditProductPage = ({ params }: Props) => {
           description: data.description,
           in_stock: data.in_stock,
           quantity: data.quantity,
+          brand_id: data.brand?.id || "",
+          diameter: data.diameter || 0,
+          width: data.width || 0,
+          profile: data.profile || 0,
           images: data.images.map((img: {
             id: string;
             image: string;

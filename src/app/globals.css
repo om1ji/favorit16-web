@@ -98,3 +98,12 @@ button {
     color-scheme: dark;
   }
 }
+
+/* Принудительно устанавливаем черный цвет для заголовков h3 в карточках товаров */
+.product-card h3,
+.product-card .product-name,
+.product-info h3,
+h3.product-name {
+  color: #000 !important;
+  text-shadow: none !important;
+}

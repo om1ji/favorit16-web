@@ -226,7 +226,14 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           <div className="image-upload-container">
             {previewUrl ? (
               <div className="image-preview">
-                <Image src={previewUrl} alt="Превью" className="preview-image" />
+                <Image 
+                  src={previewUrl} 
+                  alt="Превью" 
+                  className="preview-image" 
+                  width={200}
+                  height={200}
+                  style={{ objectFit: 'cover' }}
+                />
                 <button
                   type="button"
                   className="remove-image"

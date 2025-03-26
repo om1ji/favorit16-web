@@ -5,7 +5,6 @@
     margin-bottom: 30px;
     font-size: 28px;
     font-weight: 600;
-    color: #fff;
   }
 
   .catalog-layout {
@@ -127,11 +126,13 @@
     .product-info {
       padding: 15px;
 
-      h3 {
+      color: #000;
+
+      h3, 
+      h3.product-name {
         margin: 0 0 10px;
         font-size: 16px;
         font-weight: 500;
-        color: #fff;
       }
 
       .product-details {
@@ -149,7 +150,7 @@
           border-radius: 4px;
           color: #666;
         }
-      }
+            }
 
       .product-price {
         display: flex;
@@ -160,7 +161,7 @@
         .current-price {
           font-size: 18px;
           font-weight: 600;
-          color: #fff;
+          color: #000;
         }
 
         .old-price {
@@ -287,7 +288,6 @@
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 20px;
-    color: #fff;
   }
 
   .categories-grid {
@@ -302,7 +302,6 @@
   }
 
   .category-card {
-    background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     transition:
@@ -382,7 +381,6 @@
     .section-title {
       font-size: 24px;
       font-weight: 600;
-      color: #fff;
       display: flex;
       align-items: center;
       gap: 8px;

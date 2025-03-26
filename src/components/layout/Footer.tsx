@@ -85,6 +85,9 @@ export default function Footer() {
             <Link href="/terms" className="hover:text-white transition">
               Условия использования
             </Link>
+            <Link href="/admin" className="hover:text-white transition">
+              Админ-панель
+            </Link>
           </div>
         </div>
       </div>

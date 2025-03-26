@@ -65,8 +65,8 @@ export default function ContactsPage() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Контакты</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <h1 className="text-4xl font-bold mb-4">Контакты</h1>
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             Свяжитесь с нами любым удобным для вас способом
           </p>
         </motion.div>
@@ -198,7 +198,7 @@ export default function ContactsPage() {
         >
           <div className="bg-white rounded-lg shadow-lg p-0 overflow-hidden">
             <div className="aspect-w-16 aspect-h-9 w-full h-[400px]">
-              <iframe
+              {/* <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2243.0379302573!2d49.12046491187814!3d55.78670417243809!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x415ead19bcfe97c3%3A0xba2b70d19b0b19b6!2z0JzQsNC90LXQeiDQkdCw0YEx!5e0!3m2!1sru!2sru!4v1612345678901!5m2!1sru!2sru"
                 width="100%"
                 height="100%"
@@ -206,7 +206,8 @@ export default function ContactsPage() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-              />
+              /> */}
+              <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Acf7690991669ab73c4f5565e22066ceae61a812b7f1af71075394b13ef946536&amp;source=constructor" width="100%" height="384" frameBorder="0"></iframe>
             </div>
           </div>
         </motion.div>

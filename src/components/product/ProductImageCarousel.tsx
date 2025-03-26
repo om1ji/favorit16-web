@@ -30,8 +30,8 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
           src={images[0].image}
           alt={images[0].alt_text || productName}
           className="main-image"
-          width={600}
-          height={600}
+          width={300}
+          height={300}
         />
       </div>
     </div>

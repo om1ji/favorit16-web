@@ -90,7 +90,7 @@ export default function ProductPage({ params }: Props) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div className="container mx-auto px-4 py-24">
       {showAlert && (
         <TestModeAlert 
           onClose={() => setShowAlert(false)} 
@@ -100,7 +100,7 @@ export default function ProductPage({ params }: Props) {
       )}
 
       {/* Product Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-16">
         {/* Product Images */}
         <div>
           {product.images.length > 0 ? (

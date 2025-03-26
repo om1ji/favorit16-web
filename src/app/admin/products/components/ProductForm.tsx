@@ -33,9 +33,9 @@ interface ProductFormData {
   description: string;
   in_stock: boolean;
   quantity: number;
-  diameter?: number;
-  width?: number;
-  profile?: number;
+  diameter?: string | number;
+  width?: string | number;
+  profile?: string | number;
   images: ImageMetadata[];
 }
 
@@ -97,6 +97,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
         setCategories(categoriesDataProcessed);
         setBrands(brandsData.results);
+
+        // If we have initialData, update formData with proper values
+        if (initialData) {
+          setFormData(prev => ({
+            ...prev,
+            ...initialData,
+            brand_id: initialData.brand_id || "",
+            width: initialData.width ? String(initialData.width) : "",
+            profile: initialData.profile ? String(initialData.profile) : "",
+            diameter: initialData.diameter ? String(initialData.diameter) : "",
+          }));
+        }
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setErrors((prev) => ({
@@ -108,7 +120,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     };
 
     fetchData();
-  }, []);
+  }, [initialData]);
 
   const formatPrice = (value: string): string => {
     const number = value.replace(/[^\d.]/g, "");
@@ -129,6 +141,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     if (name === "price" || name === "old_price") {
       formattedValue = formatPrice(value);
+    }
+
+    // Handle numeric fields
+    if (name === "diameter" || name === "width" || name === "profile") {
+      formattedValue = value === "" ? "" : Number(value).toString();
     }
 
     setFormData((prev) => ({
@@ -449,7 +466,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             type="number"
             id="width"
             name="width"
-            value={formData.width || ""}
+            value={formData.width}
             onChange={handleChange}
             min="0"
             max="999"
@@ -464,7 +481,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             type="number"
             id="profile"
             name="profile"
-            value={formData.profile || ""}
+            value={formData.profile}
             onChange={handleChange}
             min="0"
             max="999"
@@ -479,7 +496,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             type="number"
             id="diameter"
             name="diameter"
-            value={formData.diameter || ""}
+            value={formData.diameter}
             onChange={handleChange}
             min="0"
             max="999"
