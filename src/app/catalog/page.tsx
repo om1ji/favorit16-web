@@ -26,10 +26,18 @@ interface CatalogPageProps {
   initialCategorySlug?: string;
 }
 
-export default function CatalogPage({ params }: { params?: { slug?: string } }) {
+export default function CatalogPage({ params }: { params?: { slug?: string } | Promise<{ slug: string }> }) {
+  if (params && 'then' in params) {
+    return <AsyncCatalogPage params={params} />;
+  }
+
   const initialCategorySlug = params?.slug;
-  
   return <CatalogPageContent initialCategorySlug={initialCategorySlug} />;
+}
+
+function AsyncCatalogPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = React.use(params);
+  return <CatalogPageContent initialCategorySlug={slug} />;
 }
 
 const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
@@ -84,7 +92,7 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
           );
           fetchingProducts.current = true;
 
-          const apiParams: any = {
+          const apiParams: Record<string, string | number> = {
             category: initialCategorySlug,
             page: currentPage,
             page_size: 10,
@@ -140,7 +148,7 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
 
       fetchingProducts.current = true;
 
-      const apiParams: any = {
+      const apiParams: Record<string, string | number | boolean> = {
         ...activeFilters,
         page: currentPage,
         page_size: 10,
@@ -178,7 +186,7 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
       filtersChanged.current = true;
       fetchingProducts.current = true;
 
-      const apiParams: any = {
+      const apiParams: Record<string, string | number | boolean> = {
         category: initialCategorySlug,
         page: currentPage,
         page_size: 10,

@@ -57,13 +57,12 @@ function AppContent({ children }: { children: React.ReactNode }) {
 
         if (accessToken) {
           try {
-            await dispatch(getMe() as any);
-          } catch (error) {
-            console.error(error);
+            await dispatch(getMe() as unknown as ReturnType<typeof dispatch>);
+          } catch (err) {
+            console.error(err);
 
             if (refreshToken) {
               try {
-
                 const response = await fetch(
                   `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/token/refresh/`,
                   {
@@ -77,9 +76,8 @@ function AppContent({ children }: { children: React.ReactNode }) {
                   const data = await response.json();
                   localStorage.setItem("access_token", data.access);
 
-                  await dispatch(getMe() as any);
+                  await dispatch(getMe() as unknown as ReturnType<typeof dispatch>);
                 } else {
-
                   const isProtectedPage =
                     pathname?.startsWith("/admin") ||
                     pathname?.startsWith("/profile");
@@ -89,8 +87,8 @@ function AppContent({ children }: { children: React.ReactNode }) {
                     localStorage.removeItem("refresh_token");
                   }
                 }
-              } catch (refreshError) {
-                console.error(refreshError);
+              } catch (refreshErr) {
+                console.error(refreshErr);
 
                 const isProtectedPage =
                   pathname?.startsWith("/admin") ||
@@ -106,7 +104,8 @@ function AppContent({ children }: { children: React.ReactNode }) {
         }
 
         setIsInitialized(true);
-      } catch (error) {
+      } catch (err) {
+        console.error("Error during initialization:", err);
         setIsInitialized(true);
       }
     };

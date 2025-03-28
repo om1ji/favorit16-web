@@ -34,7 +34,7 @@ const ProductsPage = () => {
       const params: Record<string, string> = {
         page: page.toString(),
         ...Object.fromEntries(
-          Object.entries(filters).filter(([_, value]) => value !== ""),
+          Object.entries(filters).filter(([key, value]) => value !== ""),
         ),
       };
 

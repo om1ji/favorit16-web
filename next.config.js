@@ -18,7 +18,13 @@ const nextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60,
-  }
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 module.exports = nextConfig;

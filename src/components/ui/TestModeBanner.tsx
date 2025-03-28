@@ -16,14 +16,13 @@ const TestModeBanner: React.FC<TestModeBannerProps> = ({
   permanentDisplay = false,
   additionalClasses = "",
 }) => {
-  const [animate, setAnimate] = useState(true);
   const pathname = usePathname();
   const isAdminPanel = pathname.startsWith('/admin');
 
   // Always call hooks at the top level, before any conditional returns
   useEffect(() => {
     const timer = setInterval(() => {
-      setAnimate((prev) => !prev);
+      // setAnimate((prev) => !prev);
     }, 15000);
 
     return () => {

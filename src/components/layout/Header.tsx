@@ -9,7 +9,6 @@ import { useSiteInfo } from "@/hooks/useConfig";
 import Navigation from "./Navigation";
 import SocialLinks from "./SocialLinks";
 import ContactInfo from "./ContactInfo";
-import { selectUser } from "@/redux/features/authSlice";
 import CategoriesNav from "./CategoriesNav";
 import { usePathname } from "next/navigation";
 import {

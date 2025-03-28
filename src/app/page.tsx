@@ -11,7 +11,6 @@ import {
 import HeroSection from "@/components/sections/HeroSection";
 import Features from "@/components/sections/Features";
 import Categories from "@/components/sections/Categories";
-import PopularProducts from "@/components/sections/PopularProducts";
 import Newsletter from "@/components/sections/Newsletter";
 import TestModeAlert from "@/components/ui/TestModeAlert";
 import { defaultConfig } from "@/lib/config/default-config";
