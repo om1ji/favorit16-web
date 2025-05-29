@@ -9,18 +9,19 @@ import {
   selectProducts,
   selectCategories,
   selectLoading,
+  selectCategoriesLoading,
   selectError,
   selectTotalProducts,
   selectCurrentPage,
   setCurrentPage,
 } from "@/redux/features/productsSlice";
-import { Product, ProductFilters } from "@/types/api";
+import { Product, ProductFilters as ProductFiltersType } from "@/types/api";
 import Link from "next/link";
-import TireFilters from "@/components/filters/TireFilters";
 import "./catalog.scss";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ProductCard from "@/components/product/ProductCard";
+import ProductFilters from "@/components/filters/ProductFilters";
 
 interface CatalogPageProps {
   initialCategorySlug?: string;
@@ -45,16 +46,17 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
   const products = useSelector(selectProducts);
   const categories = useSelector(selectCategories);
   const loading = useSelector(selectLoading);
+  const categoriesLoading = useSelector(selectCategoriesLoading);
   const error = useSelector(selectError);
   const totalCount = useSelector(selectTotalProducts);
   const currentPage = useSelector(selectCurrentPage);
-  const [activeFilters, setActiveFilters] = useState<ProductFilters>({});
+  const [activeFilters, setActiveFilters] = useState<ProductFiltersType>({});
   const router = useRouter();
 
   const fetchingProducts = useRef(false);
   const fetchingCategories = useRef(false);
   const filtersChanged = useRef(false);
-  const prevActiveFilters = useRef<ProductFilters>({});
+  const prevActiveFilters = useRef<ProductFiltersType>({});
   const prevPage = useRef<number>(1);
   const initialFiltersSet = useRef(false);
 
@@ -109,14 +111,14 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
   }, [categories.length, initialCategorySlug, dispatch, currentPage]);
 
   useEffect(() => {
-    if (categories.length === 0 && !fetchingCategories.current && !loading) {
+    if (categories.length === 0 && !categoriesLoading && !loading) {
       console.log("Fetching categories");
       fetchingCategories.current = true;
       dispatch(fetchCategories()).finally(() => {
         fetchingCategories.current = false;
       });
     }
-  }, [dispatch, categories.length, loading]);
+  }, [dispatch, categories.length, categoriesLoading, loading]);
 
   useEffect(() => {
     if (
@@ -206,7 +208,7 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
     initialFiltersSet,
   ]);
 
-  const updateURL = (filters: ProductFilters, page: number) => {
+  const updateURL = (filters: ProductFiltersType, page: number) => {
     if (!initialCategorySlug) return;
     const params = new URLSearchParams();
 
@@ -234,6 +236,23 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
     dispatch(setCurrentPage(1));
     updateURL(newFilters, 1);
   };
+
+  // Определяем тип категории
+  const getCategoryType = (categorySlug: string): 'tire' | 'wheel' | 'other' => {
+    const category = categories.find(cat => cat.slug === categorySlug);
+    if (!category) return 'other';
+    
+    const categoryName = category.name.toLowerCase();
+    if (categoryName.includes('шин') || categoryName.includes('tire')) {
+      return 'tire';
+    }
+    if (categoryName.includes('диск') || categoryName.includes('wheel') || categoryName.includes('колес')) {
+      return 'wheel';
+    }
+    return 'other';
+  };
+
+  const categoryType = initialCategorySlug ? getCategoryType(initialCategorySlug) : 'other';
 
   const handleTireFiltersChange = (tireFilters: any) => {
     if (!initialCategorySlug) return;
@@ -382,7 +401,10 @@ const CatalogPageContent = ({ initialCategorySlug }: CatalogPageProps) => {
         <div className="catalog-layout">
           {initialCategorySlug && (
             <div className="catalog-sidebar">
-              <TireFilters onFilterChange={handleTireFiltersChange} />
+              <ProductFilters 
+                onFilterChange={handleTireFiltersChange} 
+                categoryType={categoryType}
+              />
             </div>
           )}
 

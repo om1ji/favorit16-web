@@ -41,11 +41,21 @@ export interface Product {
   has_discount: boolean;
   discount_percentage: number;
 
-  // Tire specific fields
+  // Common fields
   diameter: number | null;
+
+  // Tire specific fields
   width: number | null;
   profile: number | null;
   tire_size: string | null;
+
+  // Wheel specific fields
+  wheel_width: number | null;
+  et_offset: number | null;
+  pcd: number | null;
+  bolt_count: number | null;
+  center_bore: number | null;
+  wheel_size: string | null;
 }
 
 export interface ProductsResponse {
@@ -63,16 +73,33 @@ export interface ProductsFilter {
   min_price?: number;
   max_price?: number;
 
-  // Tire specific filters
+  // Common filters
   diameter?: number;
   min_diameter?: number;
   max_diameter?: number;
+
+  // Tire specific filters
   width?: number;
   min_width?: number;
   max_width?: number;
   profile?: number;
   min_profile?: number;
   max_profile?: number;
+
+  // Wheel specific filters
+  wheel_width?: number;
+  min_wheel_width?: number;
+  max_wheel_width?: number;
+  et_offset?: number;
+  min_et_offset?: number;
+  max_et_offset?: number;
+  pcd?: number;
+  min_pcd?: number;
+  max_pcd?: number;
+  bolt_count?: number;
+  center_bore?: number;
+  min_center_bore?: number;
+  max_center_bore?: number;
 
   search?: string;
   ordering?: string;

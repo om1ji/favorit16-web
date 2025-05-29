@@ -88,10 +88,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {product.brand?.name && <span className="font-bold">{product.brand.name}</span>} {product.name}
           </div>
           
-          {/* Размер шины, если есть */}
+          {/* Размер шины или диска, если есть */}
           {product.tire_size && (
-            <div className="inline-block bg-gray-100 rounded-md px-2 py-1 text-xs text-gray-700 mb-2">
-              {product.tire_size}
+            <div className="inline-block bg-blue-100 rounded-md px-2 py-1 text-xs text-blue-700 mb-2">
+              Шина: {product.tire_size}
+            </div>
+          )}
+          
+          {product.wheel_size && (
+            <div className="inline-block bg-green-100 rounded-md px-2 py-1 text-xs text-green-700 mb-2">
+              Диск: {product.wheel_size}
             </div>
           )}
           

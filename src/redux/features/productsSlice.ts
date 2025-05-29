@@ -15,6 +15,8 @@ interface ProductsState {
   products: Product[];
   selectedProduct: Product | null;
   loading: boolean;
+  categoriesLoading: boolean;
+  brandsLoading: boolean;
   error: string | null;
   totalProducts: number;
   currentPage: number;
@@ -27,6 +29,8 @@ const initialState: ProductsState = {
   products: [],
   selectedProduct: null,
   loading: false,
+  categoriesLoading: false,
+  brandsLoading: false,
   error: null,
   totalProducts: 0,
   currentPage: 1,
@@ -38,10 +42,16 @@ export const fetchCategories = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     const state = getState() as RootState;
 
-    // Если категории уже загружены, возвращаем их
-    if (state.products.categories.length > 0 && !state.products.loading) {
+    // Если категории уже загружены, возвращаем кешированные данные
+    if (state.products.categories.length > 0) {
       console.log("Using cached categories");
-      return state.products.categories;
+      return { results: state.products.categories };
+    }
+
+    // Если уже идет загрузка категорий, не делаем новый запрос
+    if (state.products.categoriesLoading) {
+      console.log("Categories already loading, skipping request");
+      return { results: [] };
     }
 
     try {
@@ -64,10 +74,16 @@ export const fetchBrands = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     const state = getState() as RootState;
 
-    // Если бренды уже загружены, возвращаем их
-    if (state.products.brands.length > 0 && !state.products.loading) {
+    // Если бренды уже загружены, возвращаем кешированные данные
+    if (state.products.brands.length > 0) {
       console.log("Using cached brands");
-      return state.products.brands;
+      return { results: state.products.brands };
+    }
+
+    // Если уже идет загрузка брендов, не делаем новый запрос
+    if (state.products.brandsLoading) {
+      console.log("Brands already loading, skipping request");
+      return { results: [] };
     }
 
     try {
@@ -225,11 +241,11 @@ const productsSlice = createSlice({
     // Categories
     builder
       .addCase(fetchCategories.pending, (state) => {
-        state.loading = true;
+        state.categoriesLoading = true;
         state.error = null;
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
-        state.loading = false;
+        state.categoriesLoading = false;
         // Проверяем структуру данных и сохраняем соответствующим образом
         if (action.payload.results) {
           state.categories = action.payload.results;
@@ -238,18 +254,18 @@ const productsSlice = createSlice({
         }
       })
       .addCase(fetchCategories.rejected, (state, action) => {
-        state.loading = false;
+        state.categoriesLoading = false;
         state.error = action.error.message || "Failed to fetch categories";
       });
 
     // Brands
     builder
       .addCase(fetchBrands.pending, (state) => {
-        state.loading = true;
+        state.brandsLoading = true;
         state.error = null;
       })
       .addCase(fetchBrands.fulfilled, (state, action) => {
-        state.loading = false;
+        state.brandsLoading = false;
         // Проверяем структуру данных и сохраняем соответствующим образом
         if (action.payload.results) {
           state.brands = action.payload.results;
@@ -258,7 +274,7 @@ const productsSlice = createSlice({
         }
       })
       .addCase(fetchBrands.rejected, (state, action) => {
-        state.loading = false;
+        state.brandsLoading = false;
         state.error = action.error.message || "Failed to fetch brands";
       });
 
@@ -317,6 +333,8 @@ export const selectProducts = (state: RootState) => state.products.products;
 export const selectSelectedProduct = (state: RootState) =>
   state.products.selectedProduct;
 export const selectLoading = (state: RootState) => state.products.loading;
+export const selectCategoriesLoading = (state: RootState) => state.products.categoriesLoading;
+export const selectBrandsLoading = (state: RootState) => state.products.brandsLoading;
 export const selectError = (state: RootState) => state.products.error;
 export const selectTotalProducts = (state: RootState) =>
   state.products.totalProducts;

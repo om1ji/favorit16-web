@@ -27,15 +27,27 @@ interface ProductFormData {
   id?: string;
   name: string;
   category_id: string;
-  brand_id?: string;
+  brand_id: string;
   price: string;
   old_price: string;
   description: string;
   in_stock: boolean;
   quantity: number;
+  
+  // Common fields
   diameter?: string | number;
+  
+  // Tire specific fields
   width?: string | number;
   profile?: string | number;
+  
+  // Wheel specific fields
+  wheel_width?: string | number;
+  et_offset?: string | number;
+  pcd?: string | number;
+  bolt_count?: string | number;
+  center_bore?: string | number;
+  
   images: ImageMetadata[];
 }
 
@@ -72,6 +84,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
     diameter: undefined,
     width: undefined,
     profile: undefined,
+    wheel_width: undefined,
+    et_offset: undefined,
+    pcd: undefined,
+    bolt_count: undefined,
+    center_bore: undefined,
     images: [],
     ...initialData,
   });
@@ -79,10 +96,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [categoriesData, brandsData] = await Promise.all([
-          adminAPI.getCategoriesForSelect(),
-          adminAPI.getBrands()
-        ]);
+        const categoriesData = await adminAPI.getCategoriesForSelect();
 
         let categoriesDataProcessed: AdminCategory[] = [];
         if (Array.isArray(categoriesData)) {
@@ -96,7 +110,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
         }
 
         setCategories(categoriesDataProcessed);
-        setBrands(brandsData.results);
 
         // If we have initialData, update formData with proper values
         if (initialData) {
@@ -107,20 +120,81 @@ const ProductForm: React.FC<ProductFormProps> = ({
             width: initialData.width ? String(initialData.width) : "",
             profile: initialData.profile ? String(initialData.profile) : "",
             diameter: initialData.diameter ? String(initialData.diameter) : "",
+            wheel_width: initialData.wheel_width ? String(initialData.wheel_width) : "",
+            et_offset: initialData.et_offset ? String(initialData.et_offset) : "",
+            pcd: initialData.pcd ? String(initialData.pcd) : "",
+            bolt_count: initialData.bolt_count ? String(initialData.bolt_count) : "",
+            center_bore: initialData.center_bore ? String(initialData.center_bore) : "",
           }));
+
+          // Load brands for the initial category if it exists
+          if (initialData.category_id) {
+            try {
+              const brandsData = await adminAPI.getBrandsByCategory(initialData.category_id);
+              setBrands(brandsData.results);
+            } catch (error) {
+              console.error("Failed to fetch brands for category:", error);
+            }
+          }
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setErrors((prev) => ({
           ...prev,
           category: "Не удалось загрузить категории",
-          brand: "Не удалось загрузить бренды",
         }));
       }
     };
 
     fetchData();
   }, [initialData]);
+
+  // Загружаем бренды при изменении категории
+  useEffect(() => {
+    const fetchBrandsForCategory = async () => {
+      if (!formData.category_id) {
+        setBrands([]);
+        setFormData(prev => ({ ...prev, brand_id: "" }));
+        return;
+      }
+
+      try {
+        const brandsData = await adminAPI.getBrandsByCategory(formData.category_id);
+        setBrands(brandsData.results);
+        
+        // Если текущий бренд не принадлежит новой категории, сбрасываем его
+        if (formData.brand_id && !brandsData.results.find(brand => brand.id === formData.brand_id)) {
+          setFormData(prev => ({ ...prev, brand_id: "" }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch brands for category:", error);
+        setErrors((prev) => ({
+          ...prev,
+          brand: "Не удалось загрузить бренды для данной категории",
+        }));
+        setBrands([]);
+      }
+    };
+
+    fetchBrandsForCategory();
+  }, [formData.category_id]);
+
+  // Определяем тип категории
+  const getCategoryType = (categoryId: string): 'tire' | 'wheel' | 'other' => {
+    const category = categories.find(cat => cat.id === categoryId);
+    if (!category) return 'other';
+    
+    const categoryName = category.name.toLowerCase();
+    if (categoryName.includes('шин') || categoryName.includes('tire')) {
+      return 'tire';
+    }
+    if (categoryName.includes('диск') || categoryName.includes('wheel') || categoryName.includes('колес')) {
+      return 'wheel';
+    }
+    return 'other';
+  };
+
+  const categoryType = getCategoryType(formData.category_id);
 
   const formatPrice = (value: string): string => {
     const number = value.replace(/[^\d.]/g, "");
@@ -144,7 +218,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }
 
     // Handle numeric fields
-    if (name === "diameter" || name === "width" || name === "profile") {
+    if (name === "diameter" || name === "width" || name === "profile" || name === "wheel_width" || name === "et_offset" || name === "pcd" || name === "bolt_count" || name === "center_bore") {
       formattedValue = value === "" ? "" : Number(value).toString();
     }
 
@@ -263,10 +337,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
     setErrors({});
 
     try {
+      // Валидация обязательных полей
+      if (!formData.brand_id) {
+        setErrors({ brand: "Выберите бренд" });
+        setLoading(false);
+        return;
+      }
+
       // Create a JSON object for the entire payload
       const jsonData: Record<string, unknown> = {
         name: formData.name,
         category: formData.category_id,
+        brand: formData.brand_id, // Теперь обязательное поле
         price: Number(formData.price).toFixed(2),
         description: formData.description,
         in_stock: formData.in_stock,
@@ -282,9 +364,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
       if (formData.old_price) {
         jsonData.old_price = Number(formData.old_price).toFixed(2);
       }
-      if (formData.brand_id) {
-        jsonData.brand = formData.brand_id;
-      }
       if (formData.diameter) {
         jsonData.diameter = Number(formData.diameter);
       }
@@ -293,6 +372,21 @@ const ProductForm: React.FC<ProductFormProps> = ({
       }
       if (formData.profile) {
         jsonData.profile = Number(formData.profile);
+      }
+      if (formData.wheel_width) {
+        jsonData.wheel_width = Number(formData.wheel_width);
+      }
+      if (formData.et_offset) {
+        jsonData.et_offset = Number(formData.et_offset);
+      }
+      if (formData.pcd) {
+        jsonData.pcd = Number(formData.pcd);
+      }
+      if (formData.bolt_count) {
+        jsonData.bolt_count = Number(formData.bolt_count);
+      }
+      if (formData.center_bore) {
+        jsonData.center_bore = Number(formData.center_bore);
       }
 
       console.log("JSON data being sent:", jsonData);
@@ -381,14 +475,23 @@ const ProductForm: React.FC<ProductFormProps> = ({
       </div>
 
       <div className="form-group">
-        <label htmlFor="brand">Бренд</label>
+        <label htmlFor="brand">Бренд *</label>
         <select
           id="brand"
           name="brand_id"
           value={formData.brand_id || ""}
           onChange={handleChange}
+          required
+          disabled={!formData.category_id}
         >
-          <option value="">Выберите бренд</option>
+          <option value="">
+            {!formData.category_id 
+              ? "Сначала выберите категорию" 
+              : brands.length === 0 
+                ? "Загрузка брендов..." 
+                : "Выберите бренд"
+            }
+          </option>
           {brands.map((brand) => (
             <option key={brand.id} value={brand.id}>
               {brand.name}
@@ -397,6 +500,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </select>
         {errors.brand_id && (
           <span className="error">{errors.brand_id}</span>
+        )}
+        {errors.brand && (
+          <span className="error">{errors.brand}</span>
         )}
       </div>
 
@@ -459,52 +565,151 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </div>
       </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label htmlFor="width">Ширина шины</label>
-          <input
-            type="number"
-            id="width"
-            name="width"
-            value={formData.width}
-            onChange={handleChange}
-            min="0"
-            max="999"
-            placeholder="Например: 225"
-          />
-          {errors.width && <span className="error">{errors.width}</span>}
-        </div>
+      {/* Поля для шин и дисков */}
+      {categoryType !== 'other' && (
+        <>
+          {/* Общее поле диаметра */}
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="diameter">Диаметр (дюймы) *</label>
+              <input
+                type="number"
+                id="diameter"
+                name="diameter"
+                value={formData.diameter}
+                onChange={handleChange}
+                min="0"
+                max="999"
+                placeholder="Например: 17"
+                required
+              />
+              {errors.diameter && <span className="error">{errors.diameter}</span>}
+            </div>
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="profile">Профиль шины</label>
-          <input
-            type="number"
-            id="profile"
-            name="profile"
-            value={formData.profile}
-            onChange={handleChange}
-            min="0"
-            max="999"
-            placeholder="Например: 45"
-          />
-          {errors.profile && <span className="error">{errors.profile}</span>}
-        </div>
+          {/* Поля для шин */}
+          {categoryType === 'tire' && (
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="width">Ширина шины (мм)</label>
+                <input
+                  type="number"
+                  id="width"
+                  name="width"
+                  value={formData.width}
+                  onChange={handleChange}
+                  min="0"
+                  max="999"
+                  placeholder="Например: 225"
+                />
+                {errors.width && <span className="error">{errors.width}</span>}
+              </div>
 
-        <div className="form-group">
-          <label htmlFor="diameter">Диаметр</label>
-          <input
-            type="number"
-            id="diameter"
-            name="diameter"
-            value={formData.diameter}
-            onChange={handleChange}
-            min="0"
-            max="999"
-            placeholder="Например: 17"
-          />
-          {errors.diameter && <span className="error">{errors.diameter}</span>}
-        </div>
-      </div>
+              <div className="form-group">
+                <label htmlFor="profile">Профиль шины (%)</label>
+                <input
+                  type="number"
+                  id="profile"
+                  name="profile"
+                  value={formData.profile}
+                  onChange={handleChange}
+                  min="0"
+                  max="999"
+                  placeholder="Например: 45"
+                />
+                {errors.profile && <span className="error">{errors.profile}</span>}
+              </div>
+            </div>
+          )}
+
+          {/* Поля для дисков */}
+          {categoryType === 'wheel' && (
+            <>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="wheel_width">Ширина диска (дюймы)</label>
+                  <input
+                    type="number"
+                    id="wheel_width"
+                    name="wheel_width"
+                    value={formData.wheel_width}
+                    onChange={handleChange}
+                    min="0"
+                    max="999"
+                    step="0.5"
+                    placeholder="Например: 7.5"
+                  />
+                  {errors.wheel_width && <span className="error">{errors.wheel_width}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="et_offset">Вылет ET (мм)</label>
+                  <input
+                    type="number"
+                    id="et_offset"
+                    name="et_offset"
+                    value={formData.et_offset}
+                    onChange={handleChange}
+                    min="-999"
+                    max="999"
+                    placeholder="Например: 35"
+                  />
+                  {errors.et_offset && <span className="error">{errors.et_offset}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="pcd">PCD (мм)</label>
+                  <input
+                    type="number"
+                    id="pcd"
+                    name="pcd"
+                    value={formData.pcd}
+                    onChange={handleChange}
+                    min="0"
+                    max="999"
+                    step="0.1"
+                    placeholder="Например: 114.3"
+                  />
+                  {errors.pcd && <span className="error">{errors.pcd}</span>}
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="bolt_count">Количество болтов</label>
+                  <input
+                    type="number"
+                    id="bolt_count"
+                    name="bolt_count"
+                    value={formData.bolt_count}
+                    onChange={handleChange}
+                    min="0"
+                    max="999"
+                    placeholder="Например: 5"
+                  />
+                  {errors.bolt_count && <span className="error">{errors.bolt_count}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="center_bore">Центральное отверстие (мм)</label>
+                  <input
+                    type="number"
+                    id="center_bore"
+                    name="center_bore"
+                    value={formData.center_bore}
+                    onChange={handleChange}
+                    min="0"
+                    max="999"
+                    step="0.1"
+                    placeholder="Например: 66.6"
+                  />
+                  {errors.center_bore && <span className="error">{errors.center_bore}</span>}
+                </div>
+              </div>
+            </>
+          )}
+        </>
+      )}
 
       <div className="form-group">
         <label htmlFor="description">Описание</label>

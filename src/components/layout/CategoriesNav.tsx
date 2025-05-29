@@ -6,7 +6,7 @@ import { AppDispatch } from "@/redux/store";
 import {
   fetchCategories,
   selectCategories,
-  selectLoading,
+  selectCategoriesLoading,
 } from "@/redux/features/productsSlice";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,7 +17,7 @@ import Image from "next/image";
 const CategoriesNav = () => {
   const dispatch = useDispatch<AppDispatch>();
   const categories = useSelector(selectCategories);
-  const loading = useSelector(selectLoading);
+  const loading = useSelector(selectCategoriesLoading);
   const pathname = usePathname();
 
   const [activeCategory, setActiveCategory] = useState<string | null>(null);

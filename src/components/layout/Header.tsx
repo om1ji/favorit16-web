@@ -14,7 +14,7 @@ import { usePathname } from "next/navigation";
 import {
   selectCategories,
   fetchCategories,
-  selectLoading,
+  selectCategoriesLoading,
 } from "@/redux/features/productsSlice";
 import { AppDispatch } from "@/redux/store";
 import TestModeBanner from "@/components/ui/TestModeBanner";
@@ -27,7 +27,7 @@ export default function Header() {
   const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
   const categories = useSelector(selectCategories);
-  const categoriesLoading = useSelector(selectLoading);
+  const categoriesLoading = useSelector(selectCategoriesLoading);
 
   // Check if we're in the admin panel
   const isAdminPanel = pathname.startsWith('/admin');
